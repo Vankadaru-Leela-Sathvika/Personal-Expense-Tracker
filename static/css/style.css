@@ -395,7 +395,7 @@ h6 {
 
 .header .toggle-sidebar-btn {
   font-size: 32px;
-  padding-left: 10px;
+  padding-right: 10px;
   cursor: pointer;
   color: #012970;
 }
@@ -1256,7 +1256,6 @@ h6 {
     # Sections
     --------------------------------------------------------------*/
     section {
-      padding: 60px 0;
       overflow: hidden;
   }
   

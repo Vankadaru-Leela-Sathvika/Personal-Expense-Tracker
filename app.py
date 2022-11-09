@@ -1,4 +1,6 @@
-from flask import Flask,  render_template
+from flask import Flask,  render_template,request,redirect
+import sqlite3 as sql
+import ibm_db
 
 app = Flask(__name__)
 
@@ -23,6 +25,9 @@ def presentHome():
 def presentProfile():
     return render_template('profile.html')
 
+@app.route('/expenses')
+def presentExpenses():
+    return render_template('expenses.html')
 
 @app.route('/sample')
 def presentSample():
