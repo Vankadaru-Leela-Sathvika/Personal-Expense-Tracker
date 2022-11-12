@@ -13,13 +13,23 @@
         </a>
     </div><!-- End Logo -->
 </header>
-<div class="row" style="margin-top: 100px;">
+<div class="row d-flex justify-content-center" style="margin-top: 65px;">
+    <div class="col-md-5">
+        {% if msg %}
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            {{ msg }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<div class="row d-flex justify-content-center" style="margin-top:35px;">
     <div class="col-md-6">
         <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
             class="img-fluid" alt="Sample image">
     </div>
     <div class="col-md-5">
-        <form>
+        <form action="/postSignUpData" method="post">
             <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
                 <p class="lead fw-normal mb-0 me-3">Sign in with</p>
                 <button type="button" class="btn btn-primary btn-floating mx-1">
@@ -41,8 +51,8 @@
 
             <!-- Name input -->
             <div class="form-group md-3">
-                <input placeholder="Name" class="form-control" type="text" name="text" formControlName="text"
-                    id="registerName">
+                <input placeholder="Name" class="form-control" type="text" name="name" formControlName="text"
+                    id="name">
                 <!-- <div *ngIf="func.text.touched && func.text.invalid" class="alert alert-danger">
                     <div *ngIf="func.text.errors?.['required']">* Name is required</div>
                 </div> -->
@@ -52,7 +62,7 @@
             <!-- Email input -->
             <div class="form-group ">
                 <input placeholder="Email" class="form-control" type="email" name="email"
-                    formControlName="email" id="form2Example2">
+                    formControlName="email" id="email">
                 <!-- <div *ngIf="func.email.touched && func.email.invalid" class="alert alert-danger">
                     <div *ngIf="func.email.errors?.['required']">* Email is required</div>
                     <div *ngIf="func.email.errors?.['email']">* Enter valid Email</div>
@@ -62,7 +72,7 @@
 
             <!-- Password input -->
             <div class="form-group">
-                <input placeholder="Password" class="form-control" type="password" name="pass"
+                <input placeholder="Password" class="form-control" type="password" name="password"
                     formControlName="pass1">
                 <!-- <div *ngIf="func.pass1.touched && func.pass1.invalid" class="alert alert-danger">
                     <div *ngIf="func.pass1.errors?.['required']">* Password is required</div>
