@@ -32,8 +32,14 @@ def signOut():
 
 @app.route('/home')
 def presentHome():
-    user = database.fetchUser(session['email'])
-    return render_template('home.html',user = user)
+    email = session['email']
+    user = database.fetchUser(email)
+    totalExpenses = database.getExpensesTotal(email)
+    totalSavings = database.getSavingsTotal(email)
+    expenseFilter = "year"
+    savingsFilter = "year"
+    expenses = database.fetchExpensesPreview(email,5)
+    return render_template('home.html',user = user,expenseFilter = expenseFilter,totalExpenses = totalExpenses, savingsFilter = savingsFilter, totalSavings = totalSavings, expenses = expenses)
 
 @app.route('/profile')
 def presentProfile():
@@ -43,8 +49,9 @@ def presentProfile():
 @app.route('/expenses')
 def presentExpenses():
     user = database.fetchUser(session['email'])
-    expenses = database.fetchExpenses(session['email'])
-    return render_template('expenses.html',user = user, expenses = expenses)
+    expenses = database.fetchExpensesPreview(session['email'])
+    savings = database.fetchSavings(session['email'])
+    return render_template('expenses.html',user = user, expenses = expenses,savings=savings)
 
 @app.route('/sample')
 def presentSample():
@@ -113,3 +120,13 @@ def changePassword():
         if database.updatePassword(session['email'],newpassword):
             return render_template('profile.html',user=user, passwordChangeSuccessful = "Password Changed Successfully !!",pageType="profile-change-password")
         return render_template('profile.html',user=user, wrongPassword = "Couldn't Change Password !!",pageType="profile-change-password")
+
+@app.route('/addExpense',methods = ['GET','POST'])
+def addExpense():
+    email = session['email']
+    date = request.form["expensedate"].split("-")
+    expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2])+1)
+    print(request.form)
+    if database.insertExpenseData(email,expenseid,date[0],date[1],date[2],request.form):
+        return redirect('/expenses')
+    return redirect('/expenses')
