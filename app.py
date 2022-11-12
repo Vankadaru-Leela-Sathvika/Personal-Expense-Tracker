@@ -1,21 +1,10 @@
-from flask import Flask,flash, render_template,request,redirect
-import credentials
-import ibm_db
-import ibm_boto3
-from ibm_botocore.client import Config, ClientError
+from flask import *
 
-conn = ibm_db.connect("DATABASE="+credentials.DB2_DATABASE_NAME+";HOSTNAME="+credentials.DB2_HOST_NAME+";PORT="+credentials.DB2_PORT+";SECURITY=SSL;SSLServerCertificate=DigiCertGlobalRootCA.crt;UID="+credentials.DB2_UID+";PWD="+credentials.DB2_PWD+"",'','')
+from database import *
+from models import *
 
-cos = ibm_boto3.resource("s3",
-    ibm_api_key_id=credentials.COS_API_KEY_ID,
-    ibm_service_instance_id=credentials.COS_INSTANCE_CRN,
-    config=Config(signature_version="oauth"),
-    endpoint_url=credentials.COS_ENDPOINT
-)
-
-class User:
-    def __init__(self) -> None:
-        pass
+user = User("sample","sample","sample","sample")
+database = Database()
 
 app = Flask(__name__)
 app.secret_key = "FlaskNotFoundError"
@@ -32,22 +21,35 @@ def signup():
 def signin():
     return render_template('signin.html')
 
+@app.route('/signout')  
+def signOut():  
+    if 'email' in session:  
+        session.pop('email',None)  
+        session.pop('name',None)
+        return redirect('/')
+    return redirect('/')  
+    
 
 @app.route('/home')
 def presentHome():
-    return render_template('home.html')
+    user = database.fetchUser(session['email'])
+    return render_template('home.html',user = user)
 
 @app.route('/profile')
 def presentProfile():
-    return render_template('profile.html')
+    user = database.fetchUser(session['email'])
+    return render_template('profile.html', user = user,pageType="profile-overview")
 
 @app.route('/expenses')
 def presentExpenses():
-    return render_template('expenses.html')
+    user = database.fetchUser(session['email'])
+    expenses = database.fetchExpenses(session['email'])
+    return render_template('expenses.html',user = user, expenses = expenses)
 
 @app.route('/sample')
 def presentSample():
-    return render_template('sample.html')
+    user = database.fetchUser(session['email'])
+    return render_template('sample.html',user=user)
 
 
 @app.route('/postSignUpData',methods =['POST','GET'])
@@ -56,36 +58,58 @@ def postSignUpData():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
-        
-        sql = "SELECT * FROM user WHERE email=?"
-        stmt = ibm_db.prepare(conn, sql)
-        ibm_db.bind_param(stmt,1,email)
-        ibm_db.execute(stmt)
-        account = ibm_db.fetch_assoc(stmt)
+        account = database.fetchUser(email)
         if account:
-            return render_template('signup.html', msg="You are already a member, please login using your details")
+            return render_template('signin.html', msg="You are already a member, please login using your details")
         else:
-            insert_sql = "INSERT INTO user(email,password,name) VALUES (?,?,?)"
-            prep_stmt = ibm_db.prepare(conn, insert_sql)
-            ibm_db.bind_param(prep_stmt, 1, email)
-            ibm_db.bind_param(prep_stmt, 2, password)
-            ibm_db.bind_param(prep_stmt, 3, name)
-            ibm_db.execute(prep_stmt)
-        return render_template('signin.html', msg="Registration successfull..")
+            if database.insertSignUpUserData(email,password,name):
+                return render_template('signin.html', msg="Registration successfull...")
+        return render_template('signup.html', msg="Unable to Register!! Try again")
 
 @app.route('/postSignInData',methods =['POST','GET'])
 def postSignInData():
+    global user
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-    
-        sql = "SELECT PASSWORD FROM user WHERE email=?"
-        stmt = ibm_db.prepare(conn, sql)
-        ibm_db.bind_param(stmt,1,email)
-        ibm_db.execute(stmt)
-        account = ibm_db.fetch_assoc(stmt)
-        print(account)
-        if account and account["PASSWORD"]==password:
-            return render_template('home.html',email=email)
+        if database.fetchUser(email):
+            fetchedPassword = database.fetchPassword(email)
+            if fetchedPassword==password:
+                session['email']=email 
+                return redirect('home')
+            else:
+                return render_template('signin.html', invalidLogin="Your Password is wrong!!")                
         else:
-            return render_template('signin.html', invalidLogin="Your email or password is wrong!!")
+            return render_template('signin.html', invalidLogin="You have not Registered yet!!")
+
+@app.route('/editProfile',methods=['POST','GET'])
+def editProfile():
+    global user
+    if request.method=="POST":
+        print(request.form)
+        name=request.form["name"]
+        country=request.form["country"]
+        phone=request.form["phone"]
+        email=session["email"]
+    
+        database.updateUserData(email,name,country,phone)
+        user=database.fetchUser(email)
+        if user:
+            return render_template('profile.html',user=user,pageType="profile-edit",profileEditSuccessful="Saved Changes!!")
+
+@app.route('/changePassword',methods = ['GET','POST'])
+def changePassword():
+    if request.method == 'POST':
+        password = request.form["password"]
+        newpassword = request.form["newpassword"]
+        renewpassword = request.form["renewpassword"]
+        fetchedPassword = database.fetchPassword(session['email'])
+        print(fetchedPassword)
+        user = database.fetchUser(session['email'])
+        if fetchedPassword != password:
+            return render_template('profile.html',user=user, wrongPassword = "Wrong Password !!",pageType="profile-change-password")
+        if newpassword != renewpassword:
+            return render_template('profile.html',user=user, noMatch = "Your new Password and Re-type Password don't match!! Enter Password Again...",pageType="profile-change-password")
+        if database.updatePassword(session['email'],newpassword):
+            return render_template('profile.html',user=user, passwordChangeSuccessful = "Password Changed Successfully !!",pageType="profile-change-password")
+        return render_template('profile.html',user=user, wrongPassword = "Couldn't Change Password !!",pageType="profile-change-password")
