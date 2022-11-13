@@ -198,3 +198,28 @@ class Database:
         except:
             return False 
         return True
+    def getExpensesThisYear(self,email):
+        year = date.today().year
+        sql ="SELECT month,SUM(amount) as amount from expenses where email=? and year=? group by month;"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.bind_param(stmt,2,year)
+        ibm_db.execute(stmt)
+        expense = ibm_db.fetch_both(stmt)
+        expensesList = []
+        while expense != False:
+            expensesList.append(expense)
+            expense = ibm_db.fetch_both(stmt)
+        return expensesList
+
+    def getExpensesAllYears(self,email):
+        sql ="SELECT year,SUM(amount) as amount from expenses where email=? group by year order by year asc;"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.execute(stmt)
+        expense = ibm_db.fetch_both(stmt)
+        expensesList = []
+        while expense != False:
+            expensesList.append(expense)
+            expense = ibm_db.fetch_both(stmt)
+        return expensesList

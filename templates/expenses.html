@@ -17,7 +17,6 @@
       <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
         Add Expense
       </button>
-
       <div class="modal fade " id="addExpenseModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -87,7 +86,7 @@
           </div>
 
           <div class="card-body">
-            <h5 class="card-title">Credit <span>|  This Month </span></h5>
+            <h5 class="card-title">Credit Expenses <span>|This Month</span></h5>
 
             <div class="d-flex align-items-center">
               <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -104,7 +103,7 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <div class="card info-card expense-card">
+        <div class="card info-card savings-card">
     
           <div class="filter">
             <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
@@ -124,7 +123,7 @@
 
             <div class="d-flex align-items-center">
               <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                <i class="bi bi-cart"></i>
+                <i class="bi bi-piggy-bank-fill"></i>
               </div>
               <div class="ps-3">
                 <h6>Rs. {{ totalExpenses }}</h6>

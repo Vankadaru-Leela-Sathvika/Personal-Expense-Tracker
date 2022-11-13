@@ -131,7 +131,7 @@ def addExpense():
     return redirect('/expenses')
 
 @app.route('/expenseRecords',methods = ['GET','POST'])
-def showRecords():
+def presentExpenseRecords():
     email = session['email']
     successMessage = None
     failureMessage = None
@@ -163,6 +163,24 @@ def showRecords():
     print(expenses)
     savings = database.fetchSavings(email)   
     return render_template('expenseRecords.html',user = user, expenses = expenses,savings=savings,successMessage = successMessage, failureMessage=failureMessage)
+
+@app.route('/expenseAnalysis')
+def presentExpenseAnalysis():
+    email=session['email']
+    user=database.fetchUser(email)
+    expenses=database.getExpensesThisYear(email)
+    monthLabels=str(['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December'])
+    monthExpenseList = [0]*12
+    for expense in expenses:
+        monthExpenseList[int(expense["MONTH"])-1]=expense["AMOUNT"]
+    expenses=database.getExpensesAllYears(email)
+    yearLabels=[]
+    yearExpenseList = []
+    for expense in expenses:
+        yearLabels.append(expense["YEAR"])
+        yearExpenseList.append(expense["AMOUNT"])
+    yearLabels=str(yearLabels)
+    return render_template('expenseAnalysis.html',filter=filter,user=user,monthLabels=monthLabels,monthExpenseList=monthExpenseList,yearLabels=yearLabels,yearExpenseList=yearExpenseList)
 
 #Sample
 @app.route('/sample')
