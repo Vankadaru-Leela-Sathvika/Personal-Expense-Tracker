@@ -54,7 +54,7 @@
                 <td>{{ row["SAVINGSTYPE"] }}</td>
                 <td>{{ row["AMOUNT"] }}</td>
                 <td>
-                  <button type="button" class="btn btn-warning" id="edit-expense" data-id='{{ row["EXPENSEID"] }}'>
+                  <button type="button" class="btn btn-warning" id="edit-expense-form" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-id='{{ row["EXPENSEID"] }}'>
                   <i class="fa fa-pen-to-square"></i>
                   </button>
 
@@ -70,9 +70,7 @@
         <!-- End Table with hoverable rows -->
       </div>
   </div>
-{% if expense %}
-  <!-- Edit Expense Modal -->
-  <div class="modal fade " id="editExpenseModal" tabindex="-1">
+<div class="modal fade " id="editExpenseModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
@@ -81,7 +79,8 @@
         </div>
         <div class="modal-body">
           <!-- Multi Columns Form -->
-          <form class="row g-3" action="/addExpense" method="post">
+          <form class="row g-3" action="/expenseRecords" method="post">
+            <input type="text" class="form-control" id="expenseid" name="expenseid" value="" hidden>
             <div class="col-md-12">
               <label for="expensename" class="form-label">Expense Name</label>
               <input type="text" class="form-control" id="expensename" name="expensename" value="">
@@ -96,7 +95,7 @@
             </div>
             <div class="col-md-6">
               <label for="savings" class="form-label">Savings</label>
-              <select id="savings" class="form-select" name="savings">
+              <select id="savings" class="form-select" name="savings" value="">
                 <option selected>Savings</option>
                 {% for saving in savings%}
                   <option value='{{ saving["SAVINGSID"] }}'>{{ saving["SAVINGSNAME"] }} : {{ saving["SAVINGSTYPE"] }}</option>
@@ -108,7 +107,7 @@
               <input type="text" class="form-control" id="expenseAmount" name="expenseamount">
             </div>
             <div class="text-center">
-              <button type="submit" class="btn btn-primary">Edit Expense</button>
+              <button type="submit" class="btn btn-primary" name="submit" value="editExpense">Edit Expense</button>
               <button type="reset" class="btn btn-secondary">Reset</button>
             </div>
           </form><!-- End Multi Columns Form -->
@@ -117,8 +116,7 @@
         </div>
       </div>
     </div>
-  </div><!-- End Edit Expense Modal-->
-{% endif %}
+</div><!-- End Edit Expense Modal-->
 </section>
 <script>
   $(document).ready(function () {
@@ -130,14 +128,20 @@
 
 <script>
   $(document).ready(function(){
-    $('#edit-expense').click(function(){
+    $('#edit-expense-form').click(function(){
       var expenseid = $(this).data('id');
       $.ajax({
         url:'/expenseRecords',
         type:'post',
-        data: {'submit':'editExpense','expenseid':expenseid},
+        data: {'submit':'getExpenseValues','expenseid':expenseid},
         success: function(data) {
-          $('#editExpenseModal').modal('show')
+          var expense = JSON.parse(data);
+          $('#expenseid').val(expense['EXPENSEID']);
+          $('#expensename').val(expense['EXPENSENAME']);
+          $('#expensedate').val(expense['YEAR']+"-"+expense["MONTH"]+"-"+expense["DATE"]);
+          $('#expenseDescription').val(expense['DESCRIPTION']);
+          $('#savings').val(expense['SAVINGSID']);
+          $('#expenseAmount').val(expense['AMOUNT']);
         }
       })
     });

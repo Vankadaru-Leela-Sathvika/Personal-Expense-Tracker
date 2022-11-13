@@ -126,7 +126,6 @@ def addExpense():
     email = session['email']
     date = request.form["expensedate"].split("-")
     expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2])+1)
-    print(request.form)
     if database.insertExpenseData(email,expenseid,date[0],date[1],date[2],request.form):
         return redirect('/expenses')
     return redirect('/expenses')
@@ -146,9 +145,15 @@ def showRecords():
                 successMessage = "Deleted SuccessFully"
             else:
                 failureMessage = "Unable to delete the Expense!!"
-        elif request.form['submit']=='editExpense':
-            print(request.form)
+        elif request.form['submit']=='getExpenseValues':
             expense = database.getExpenseData(request.form['expenseid'])
+            return json.dumps(expense)
+        elif request.form['submit']=='editExpense':
+            date = request.form["expensedate"].split("-")
+            if database.editExpenseData(request.form,year=date[0],month=date[1],date=date[2]):
+                successMessage="Edited Expense Successfully!!"
+            else:
+                failureMessage="Failed to Edit Expense!!"
     return render_template('expenseRecords.html',user = user, expenses = expenses,savings=savings,successMessage = successMessage, failureMessage=failureMessage,expense=expense)
 
 #Sample

@@ -181,3 +181,20 @@ class Database:
         except:
             return False 
         return True
+
+    def editExpenseData(self,expense,year,month,date):
+        try:
+            sql = "update expenses set date = ?,month=?,year=?,expensename=?,description=?,savingsid=?,amount=? where expenseid = ?;"
+            prep_stmt = ibm_db.prepare(conn, sql)
+            ibm_db.bind_param(prep_stmt, 1, date)
+            ibm_db.bind_param(prep_stmt, 2, month)
+            ibm_db.bind_param(prep_stmt, 3, year)
+            ibm_db.bind_param(prep_stmt, 4, expense["expensename"])
+            ibm_db.bind_param(prep_stmt, 5, expense["expensedescription"])
+            ibm_db.bind_param(prep_stmt, 6, expense["savings"])
+            ibm_db.bind_param(prep_stmt, 7, expense["expenseamount"])
+            ibm_db.bind_param(prep_stmt, 8, expense["expenseid"])
+            ibm_db.execute(prep_stmt)
+        except:
+            return False 
+        return True
