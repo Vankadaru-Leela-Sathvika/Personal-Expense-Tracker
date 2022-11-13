@@ -1801,3 +1801,32 @@ h6 {
       transform: rotate(360deg);
   }
 }
+
+
+/* Sign Up Styling */
+
+.form_group{
+  position: relative;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: rgb(255, 0, 0);
+  
+}
+
+.form_group label{
+  font-weight: 600;
+  color: rgba(1, 41, 112, 0.6);
+  
+}
+.form_group div{
+  padding-left: 10px;
+}
+
+.form_group div i{
+  color: seagreen;
+}
+
+.form_group div span{
+  color: seagreen;
+}
+

@@ -1,9 +1,4 @@
-/**
-* Template Name: NiceAdmin - v2.4.1
-* Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
+
 (function() {
   "use strict";
 
@@ -197,3 +192,180 @@
     })
 
 })();
+
+
+//SignUp Validation
+
+// const form = document.getElementById('form');
+// const email = document.getElementById('email');
+// const password = document.getElementById('password');
+
+// form.addEventListener('submit', e => {
+// 	e.preventDefault();
+	
+// 	checkInputs();
+// });
+
+// function checkInputs() {
+// 	// trim to remove the whitespaces
+// 	const emailValue = email.value.trim();
+// 	const passwordValue = password.value.trim();
+	
+	
+	
+// 	if(emailValue === '') {
+// 		setErrorFor(email, 'Email cannot be blank');
+// 	} else if (!isEmail(emailValue)) {
+// 		setErrorFor(email, 'Not a valid email');
+// 	} else {
+// 		setSuccessFor(email);
+// 	}
+	
+// 	if(passwordValue === '') {
+// 		setErrorFor(password, 'Password cannot be blank');
+// 	} else {
+// 		setSuccessFor(password);
+// 	}
+	
+	
+// }
+
+// function setErrorFor(input, message) {
+// 	const formControl = input.parentElement;
+// 	const small = formControl.querySelector('small');
+// 	formControl.className = 'form-control error';
+// 	small.innerText = message;
+// }
+
+// function setSuccessFor(input) {
+// 	const formControl = input.parentElement;
+// 	formControl.className = 'form-control success';
+// }
+	
+// function isEmail(email) {
+// 	return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
+// }
+
+
+
+var nameError=document.getElementById('name-error');
+var emailError=document.getElementById('email-error');
+var passError=document.getElementById('pass-error');
+var passError1=document.getElementById('pass1-error');
+var passError2=document.getElementById('pass2-error');
+var phoneError=document.getElementById('phone-error');
+
+function validateName(){
+  var name=document.getElementById('name').value;
+
+  if(name.length==0){
+    nameError.innerHTML='Name is required';
+    return false;
+  }
+  else{
+    nameError.innerHTML="Proper Name is Required"
+  }
+  nameError.innerHTML='<i class="fa-solid fa-circle-check"></i><span>&nbsp;&nbsp;&nbsp;Name is Valid</span>';
+  return true;
+}
+
+function validateEmail(){
+  var email=document.getElementById('email').value;
+  if(email.length==0){
+    emailError.innerHTML="Email is Required";
+    return false;
+  }
+  if(!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)){
+    emailError.innerHTML="Email Invalid";
+    return false;
+  }
+
+  emailError.innerHTML='<i class="fa-solid fa-circle-check"></i><span>&nbsp;&nbsp;&nbsp;Email is Valid</span>';
+  return true;
+}
+
+
+function validatePass(){
+  var pass=document.getElementById('pass').value;
+  if(pass.length==0){
+    passError.innerHTML="Password is Required";
+    return false;
+  }
+  if(pass.length<8){
+    passError.innerHTML="Password must contain atleast 8 characters";
+    return false;
+  }
+  if(pass.length>20){
+    passError.innerHTML="Password must be below 20 characters";
+    return false;
+  }
+
+  passError.innerHTML='<i class="fa-solid fa-circle-check"></i><span>&nbsp;&nbsp;&nbsp;Password is Valid</span>';
+  return true;
+}
+
+
+
+function validatePass1(){
+  var pass1=document.getElementById('pass1').value;
+  if(pass1.length==0){
+    passError1.innerHTML="Password is Required";
+    return false;
+  }
+  if(pass1.length<8){
+    passError1.innerHTML="Password must contain atleast 8 characters";
+    return false;
+  }
+  if(pass1.length>20){
+    passError1.innerHTML="Password must be below 20 characters";
+    return false;
+  }
+
+  passError1.innerHTML='<i class="fa-solid fa-circle-check"></i><span>&nbsp;&nbsp;&nbsp;Password is Valid</span>';
+  return true;
+}
+
+
+function validatePass2(){
+  var pass2=document.getElementById('pass2').value;
+  if(pass2.length==0){
+    passError2.innerHTML="Password is Required";
+    return false;
+  }
+  if(pass2.length<8){
+    passError2.innerHTML="Password must contain atleast 8 characters";
+    return false;
+  }
+  if(pass2.length>20){
+    passError2.innerHTML="Password must be below 20 characters";
+    return false;
+  }
+
+  passError2.innerHTML='<i class="fa-solid fa-circle-check"></i><span>&nbsp;&nbsp;&nbsp;Password is Valid</span>';
+  return true;
+}
+
+
+function validatePhone(){
+  var phone=document.getElementById('phone').value;
+
+  if(phone.length==0){
+    phoneError.innerHTML='Phone is required';
+    return false;
+  }
+  if(phone.length!==10){
+    phoneError.innerHTML="PhoneNo should be 10 digits";
+    return false;
+  }
+  
+  phoneError.innerHTML='<i class="fa-solid fa-circle-check"></i><span>&nbsp;&nbsp;&nbsp;Phone Number is Valid</span>';
+  return true;
+}
+
+function ValidateForm(){
+  if(!validateName() || !validateEmail() || !validatePass()){
+    // Disabling a button
+  submitButton.disabled = true;
+  }
+  submitButton.disabled = false;
+}
