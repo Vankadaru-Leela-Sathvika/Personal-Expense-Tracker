@@ -80,10 +80,22 @@ class Database:
         return True
 
     def fetchExpensesPreview(self,email,limit=10):
-        sql ="SELECT expensename,date,month,year,expenses.description,savingsname,expenses.amount FROM expenses join savings on expenses.savingsid=savings.savingsid WHERE expenses.email=? order by expenseid desc limit ?;"
+        sql ="SELECT expensename,date,month,year,expenses.description,savingsname,savingstype,expenses.amount FROM expenses join savings on expenses.savingsid=savings.savingsid WHERE expenses.email=? order by expenseid desc limit ?;"
         stmt = ibm_db.prepare(conn, sql)
         ibm_db.bind_param(stmt,1,email)
         ibm_db.bind_param(stmt,2,limit)
+        ibm_db.execute(stmt)
+        expense = ibm_db.fetch_both(stmt)
+        expenseList = []
+        while expense != False:
+            expenseList.append(expense)
+            expense = ibm_db.fetch_both(stmt)
+        return expenseList
+    
+    def fetchExpenses(self,email):
+        sql ="SELECT expenseid,expensename,date,month,year,expenses.description,savingsname,savingstype,expenses.amount FROM expenses join savings on expenses.savingsid=savings.savingsid WHERE expenses.email=? order by expenseid desc;"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
         ibm_db.execute(stmt)
         expense = ibm_db.fetch_both(stmt)
         expenseList = []
@@ -150,4 +162,22 @@ class Database:
         except:
             print("error")
             return False
+        return True
+        
+    def getExpenseData(self,expenseid):
+        sql = "SELECT * from expenses where expenseid = ?"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,expenseid)
+        ibm_db.execute(stmt)
+        expense = ibm_db.fetch_assoc(stmt)
+        return expense
+
+    def deleteExpenseData(self,expenseid):
+        try:
+            sql = "delete from expenses where expenseid = ?;"
+            stmt = ibm_db.prepare(conn, sql)
+            ibm_db.bind_param(stmt,1,expenseid)
+            ibm_db.execute(stmt)
+        except:
+            return False 
         return True

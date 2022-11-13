@@ -1,12 +1,26 @@
 {% extends 'base.html' %}
 
 {% block main %}
+<div class="mx-auto">
+  {% if successMessage %}
+    <div class="alert alert-primary alert-dismissible fade in show" role="alert" >
+        {{ successMessage }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    {% if failureMessage %}
+    <div class="alert alert-danger alert-dismissible fade in show" role="alert">
+        {{ failureMessage }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+</div>
 <div class="pagetitle">
-    <h1>Expenses</h1>
+    <h1>Expense Records</h1>
     <nav>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item"><a href="/expenseRecords">Expenses</a></li>
+        <li class="breadcrumb-item"><a href="/expenseRecords">Expense Records</a></li>
     </ol>
     </nav>
 </div><!-- End Page Title -->
@@ -16,7 +30,7 @@
         <h5 class="card-title">Expenses</h5>
 
         <!-- Table with hoverable rows -->
-        <table class="table table-hover">
+        <table class="table table-hover" id="expense-records">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -24,7 +38,9 @@
               <th scope="col">Date</th>
               <th scope="col">Description</th>
               <th scope="col">Savings</th>
+              <th scope="col">Savings Type</th>
               <th scope="col">Amount</th>
+              <th scope="col">Edit</th>
             </tr>
           </thead>
           <tbody>
@@ -34,8 +50,19 @@
                 <td>{{ row["EXPENSENAME"] }}</td>
                 <td>{{ row["DATE"]+"/"+row["MONTH"]+"/"+row["YEAR"] }}</td>
                 <td>{{ row["DESCRIPTION"] }}</td>
-                <td>{{ row["SAVINGSID"] }}</td>
+                <td>{{ row["SAVINGSNAME"] }}</td>
+                <td>{{ row["SAVINGSTYPE"] }}</td>
                 <td>{{ row["AMOUNT"] }}</td>
+                <td>
+                  <button type="button" class="btn btn-warning" id="edit-expense" data-id='{{ row["EXPENSEID"] }}'>
+                  <i class="fa fa-pen-to-square"></i>
+                  </button>
+
+                  <form action="expenseRecords" method="post">
+                    <input type="text" name="expenseid" value='{{ row["EXPENSEID"] }}' hidden/>
+                    <button class="btn btn-danger" type="submit" name="submit" value='deleteExpense'><i class="fa fa-trash"></i></button>
+                  </form>
+                </td>
               </tr>
             {% endfor %}
           </tbody>
@@ -43,6 +70,77 @@
         <!-- End Table with hoverable rows -->
       </div>
   </div>
+{% if expense %}
+  <!-- Edit Expense Modal -->
+  <div class="modal fade " id="editExpenseModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Expense</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Multi Columns Form -->
+          <form class="row g-3" action="/addExpense" method="post">
+            <div class="col-md-12">
+              <label for="expensename" class="form-label">Expense Name</label>
+              <input type="text" class="form-control" id="expensename" name="expensename" value="">
+            </div>
+            <div class="col-md-6">
+              <label for="expensedate" class="form-label">Date</label>
+              <input type="date" class="form-control" id="expensedate" name="expensedate">
+            </div>
+            <div class="col-12">
+              <label for="expenseDescription" class="form-label">Description</label>
+              <textarea class="form-control" id="expenseDescription" name="expensedescription" placeholder="write expense split up...."></textarea>
+            </div>
+            <div class="col-md-6">
+              <label for="savings" class="form-label">Savings</label>
+              <select id="savings" class="form-select" name="savings">
+                <option selected>Savings</option>
+                {% for saving in savings%}
+                  <option value='{{ saving["SAVINGSID"] }}'>{{ saving["SAVINGSNAME"] }} : {{ saving["SAVINGSTYPE"] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="expenseAmount" class="form-label">Amount Spent</label>
+              <input type="text" class="form-control" id="expenseAmount" name="expenseamount">
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary">Edit Expense</button>
+              <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+          </form><!-- End Multi Columns Form -->
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div><!-- End Edit Expense Modal-->
+{% endif %}
 </section>
+<script>
+  $(document).ready(function () {
+    $('#expense-records').DataTable({
+        order: [[1, 'desc']],
+    });
+});
+</script>
 
+<script>
+  $(document).ready(function(){
+    $('#edit-expense').click(function(){
+      var expenseid = $(this).data('id');
+      $.ajax({
+        url:'/expenseRecords',
+        type:'post',
+        data: {'submit':'editExpense','expenseid':expenseid},
+        success: function(data) {
+          $('#editExpenseModal').modal('show')
+        }
+      })
+    });
+  });
+</script>
 {% endblock %} 

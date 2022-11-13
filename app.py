@@ -131,6 +131,25 @@ def addExpense():
         return redirect('/expenses')
     return redirect('/expenses')
 
+@app.route('/expenseRecords',methods = ['GET','POST'])
+def showRecords():
+    email = session['email']
+    user = database.fetchUser(email)
+    expenses = database.fetchExpenses(email)
+    savings = database.fetchSavings(email)
+    successMessage = None
+    failureMessage = None
+    expense=None
+    if request.method=='POST':
+        if request.form['submit']=='deleteExpense':
+            if database.deleteExpenseData(request.form['expenseid']):
+                successMessage = "Deleted SuccessFully"
+            else:
+                failureMessage = "Unable to delete the Expense!!"
+        elif request.form['submit']=='editExpense':
+            print(request.form)
+            expense = database.getExpenseData(request.form['expenseid'])
+    return render_template('expenseRecords.html',user = user, expenses = expenses,savings=savings,successMessage = successMessage, failureMessage=failureMessage,expense=expense)
 
 #Sample
 @app.route('/sample')
