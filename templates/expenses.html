@@ -71,29 +71,15 @@
     <div class="row">
       <div class="col-md-12">
         <div class="card info-card expense-card">
-    
-          <div class="filter">
-            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-              <li class="dropdown-header text-start">
-                <h6>Filter</h6>
-              </li>
-
-              <li><a class="dropdown-item" href="#">Today</a></li>
-              <li><a class="dropdown-item" href="#">This Month</a></li>
-              <li><a class="dropdown-item" href="#">This Year</a></li>
-            </ul>
-          </div>
-
           <div class="card-body">
-            <h5 class="card-title">Credit Expenses <span>|This Month</span></h5>
+            <h5 class="card-title">Credit Expenses</h5>
 
             <div class="d-flex align-items-center">
               <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                 <i class="bi bi-credit-card"></i>
               </div>
               <div class="ps-3">
-                <h6>Rs. {{ totalExpenses }}</h6>
+                <h6>Rs. {{ creditExpenses }}</h6>
                 <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
               </div>
             </div>
@@ -104,29 +90,15 @@
     <div class="row">
       <div class="col-md-12">
         <div class="card info-card savings-card">
-    
-          <div class="filter">
-            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-              <li class="dropdown-header text-start">
-                <h6>Filter</h6>
-              </li>
-
-              <li><a class="dropdown-item" href="#">Today</a></li>
-              <li><a class="dropdown-item" href="#">This Month</a></li>
-              <li><a class="dropdown-item" href="#">This Year</a></li>
-            </ul>
-          </div>
-
           <div class="card-body">
-            <h5 class="card-title">Debit Expenses <span>|  This Month </span></h5>
+            <h5 class="card-title">Debit Expenses</h5>
 
             <div class="d-flex align-items-center">
               <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                 <i class="bi bi-piggy-bank-fill"></i>
               </div>
               <div class="ps-3">
-                <h6>Rs. {{ totalExpenses }}</h6>
+                <h6>Rs. {{ debitExpenses }}</h6>
                 <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
 
               </div>
@@ -142,20 +114,20 @@
         <h5 class="card-title">Reports <span>| This Year</span></h5>
         <!-- Line Chart -->
         <div >
-          <canvas id="reportsChart" style="max-height: 400px; display: block; box-sizing: border-box; height: 208.8px; width: 418.4px;" width="523" height="261"></canvas>
+          <canvas id="lineChartThisYear" style="max-height: 400px; display: block; box-sizing: border-box; height: 208.8px; width: 418.4px;" width="523" height="261"></canvas>
         </div>
         <script>
           document.addEventListener("DOMContentLoaded", () => {
-            new Chart(document.querySelector('#reportsChart'), {
+            new Chart(document.querySelector('#lineChartThisYear'), {
               type: 'line',
               data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                labels: {{ monthLabels | safe }},
                 datasets: [{
                   label: 'Line Chart',
-                  data: [65, 59, 80, 81, 56, 55, 40],
+                  data: {{ monthExpenseList | safe }} ,
                   fill: false,
                   borderColor: 'rgb(75, 192, 192)',
-                  tension: 0.1
+                  tension: 0.3
                 }]
               },
               options: {
@@ -169,7 +141,7 @@
           });
         </script>
       </div>
-    </div>
+ </div>
   </div>
 
 </div>

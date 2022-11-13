@@ -241,3 +241,20 @@ class Database:
             expensesList.append(expense)
             expense = ibm_db.fetch_both(stmt)
         return expensesList
+    
+    def getCreditExpenses(self,email):
+        sql ="SELECT SUM(expenses.amount) as creditamount from expenses join savings on expenses.savingsid=savings.savingsid where expenses.email=? and savingstype='credit';"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.execute(stmt)
+        value = ibm_db.fetch_assoc(stmt)
+        return value["CREDITAMOUNT"]
+    
+    
+    def getDebitExpenses(self,email):
+        sql ="SELECT SUM(expenses.amount) as debitamount from expenses join savings on expenses.savingsid=savings.savingsid where expenses.email=? and savingstype='debit';"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.execute(stmt)
+        value = ibm_db.fetch_assoc(stmt)
+        return value["DEBITAMOUNT"]

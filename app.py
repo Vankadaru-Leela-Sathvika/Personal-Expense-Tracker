@@ -115,10 +115,18 @@ def presentProfile():
 #Expenses
 @app.route('/expenses')
 def presentExpenses():
-    user = database.fetchUser(session['email'])
-    expenses = database.fetchExpensesPreview(session['email'])
-    savings = database.fetchSavings(session['email'])
-    return render_template('expenses.html',user = user, expenses = expenses,savings=savings)
+    email=session['email']
+    user = database.fetchUser(email)
+    expenses = database.fetchExpensesPreview(email)
+    savings = database.fetchSavings(email)
+    creditExpenses = database.getCreditExpenses(email)
+    debitExpenses = database.getDebitExpenses(email)
+    expenses1=database.getExpensesThisYear(email)
+    monthLabels=['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December']
+    monthExpenseList = [0]*12
+    for expense in expenses1:
+        monthExpenseList[int(expense["MONTH"])-1]=expense["AMOUNT"]
+    return render_template('expenses.html',user = user, expenses = expenses, savings=savings, creditExpenses=creditExpenses, debitExpenses=debitExpenses,monthLabels=monthLabels,monthExpenseList=monthExpenseList)
 
 
 @app.route('/addExpense',methods = ['GET','POST'])
@@ -188,6 +196,45 @@ def presentExpenseAnalysis():
         yearExpenseList.append(expense["AMOUNT"])
     yearLabels=yearLabels
     return render_template('expenseAnalysis.html',filter=filter,user=user,dayLabels=dayLabels,dayExpenseList=dayExpenseList,monthLabels=monthLabels,monthExpenseList=monthExpenseList,yearLabels=yearLabels,yearExpenseList=yearExpenseList)
+
+#Savings
+@app.route('/Savings')
+def presentSavings():
+    email=session['email']
+    user=database.fetchUser(email)
+    return render_template('savings.html',user=user)
+
+@app.route('/SavingsRecords')
+def presentSavingsRecords():
+    email=session['email']
+    user=database.fetchUser(email)
+    return render_template('savingsRecords.html',user=user)
+
+@app.route('/SavingsAnalysis')
+def presentSavingsAnalysis():
+    email=session['email']
+    user=database.fetchUser(email)
+    return render_template('savingsAnalysis.html',user=user)
+
+
+#reminders
+@app.route('/Reminders')
+def presentReminders():
+    email=session['email']
+    user=database.fetchUser(email)
+    return render_template('reminders.html',user=user)
+
+@app.route('/RecurringReminders')
+def presentRecurringReminders():
+    email=session['email']
+    user=database.fetchUser(email)
+    return render_template('recurringReminders.html',user=user)
+
+@app.route('/LoanTracker')
+def presentLoanTracker():
+    email=session['email']
+    user=database.fetchUser(email)
+    return render_template('LoanTracker.html',user=user)
 
 #Sample
 @app.route('/sample')
