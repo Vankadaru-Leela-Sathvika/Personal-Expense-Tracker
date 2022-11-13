@@ -826,17 +826,17 @@ h6 {
   flex-grow: 0;
 }
 
-.dashboard .sales-card .card-icon {
+.dashboard .expense-card .card-icon {
   color: #4154f1;
   background: #f6f6fe;
 }
 
-.dashboard .revenue-card .card-icon {
+.dashboard .savings-card .card-icon {
   color: #2eca6a;
   background: #e0f8e9;
 }
 
-.dashboard .customers-card .card-icon {
+.dashboard .loan-card .card-icon {
   color: #ff771d;
   background: #ffecdf;
 }
@@ -921,24 +921,24 @@ h6 {
   margin-left: 95px;
 }
 
-/* Recent Sales */
-.dashboard .recent-sales {
+/* Recent expense */
+.dashboard .recent-expense {
   font-size: 14px;
 }
 
-.dashboard .recent-sales .table thead {
+.dashboard .recent-expense .table thead {
   background: #f6f6fe;
 }
 
-.dashboard .recent-sales .table thead th {
+.dashboard .recent-expense .table thead th {
   border: 0;
 }
 
-.dashboard .recent-sales .dataTable-top {
+.dashboard .recent-expense .dataTable-top {
   padding: 0 0 10px 0;
 }
 
-.dashboard .recent-sales .dataTable-bottom {
+.dashboard .recent-expense .dataTable-bottom {
   padding: 10px 0 0 0;
 }
 

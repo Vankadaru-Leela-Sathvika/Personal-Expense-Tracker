@@ -43,7 +43,6 @@
                 <div class="col-md-6">
                   <label for="savings" class="form-label">Savings</label>
                   <select id="savings" class="form-select" name="savings">
-                    <option selected>Savings</option>
                     {% for saving in savings%}
                       <option value='{{ saving["SAVINGSID"] }}'>{{ saving["SAVINGSNAME"] }} : {{ saving["SAVINGSTYPE"] }}</option>
                     {% endfor %}
@@ -67,40 +66,114 @@
     </div>
   </div>
 </div><!-- End Page Title -->
-<section>
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title">Reports <span>| This Year</span></h5>
-      <!-- Line Chart -->
-      <div >
-        <canvas id="reportsChart" style="max-height: 400px; display: block; box-sizing: border-box; height: 208.8px; width: 418.4px;" width="523" height="261"></canvas>
+<section class="section dashboard">
+<div class="row"> 
+  <div class="col-md-4">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card info-card expense-card">
+    
+          <div class="filter">
+            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+              <li class="dropdown-header text-start">
+                <h6>Filter</h6>
+              </li>
+
+              <li><a class="dropdown-item" href="#">Today</a></li>
+              <li><a class="dropdown-item" href="#">This Month</a></li>
+              <li><a class="dropdown-item" href="#">This Year</a></li>
+            </ul>
+          </div>
+
+          <div class="card-body">
+            <h5 class="card-title">Credit <span>|  This Month </span></h5>
+
+            <div class="d-flex align-items-center">
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-credit-card"></i>
+              </div>
+              <div class="ps-3">
+                <h6>Rs. {{ totalExpenses }}</h6>
+                <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <script>
-        document.addEventListener("DOMContentLoaded", () => {
-          new Chart(document.querySelector('#reportsChart'), {
-            type: 'line',
-            data: {
-              labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-              datasets: [{
-                label: 'Line Chart',
-                data: [65, 59, 80, 81, 56, 55, 40],
-                fill: false,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
-              }]
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true
-                }
-              }
-            }
-          });
-        });
-      </script>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card info-card expense-card">
+    
+          <div class="filter">
+            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+              <li class="dropdown-header text-start">
+                <h6>Filter</h6>
+              </li>
+
+              <li><a class="dropdown-item" href="#">Today</a></li>
+              <li><a class="dropdown-item" href="#">This Month</a></li>
+              <li><a class="dropdown-item" href="#">This Year</a></li>
+            </ul>
+          </div>
+
+          <div class="card-body">
+            <h5 class="card-title">Debit Expenses <span>|  This Month </span></h5>
+
+            <div class="d-flex align-items-center">
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-cart"></i>
+              </div>
+              <div class="ps-3">
+                <h6>Rs. {{ totalExpenses }}</h6>
+                <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Reports <span>| This Year</span></h5>
+        <!-- Line Chart -->
+        <div >
+          <canvas id="reportsChart" style="max-height: 400px; display: block; box-sizing: border-box; height: 208.8px; width: 418.4px;" width="523" height="261"></canvas>
+        </div>
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            new Chart(document.querySelector('#reportsChart'), {
+              type: 'line',
+              data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                datasets: [{
+                  label: 'Line Chart',
+                  data: [65, 59, 80, 81, 56, 55, 40],
+                  fill: false,
+                  borderColor: 'rgb(75, 192, 192)',
+                  tension: 0.1
+                }]
+              },
+              options: {
+                scales: {
+                  y: {
+                    beginAtZero: true
+                  }
+                }
+              }
+            });
+          });
+        </script>
+      </div>
+    </div>
+  </div>
+
+</div>
   <div class="card">
     <div class="card-body">
       <h5 class="card-title">Recent Expenses</h5>

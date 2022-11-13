@@ -93,7 +93,7 @@ class Database:
         return expenseList
     
     def fetchExpenses(self,email):
-        sql ="SELECT * FROM expenses join savings on expenses.savingsid=savings.savingsid WHERE expenses.email=? order by expenseid desc;"
+        sql ="SELECT expenseid, expensename,date,month,year,expenses.description,expenses.amount,expenses.savingsid,savings.savingsname,savings.savingstype FROM expenses join savings on expenses.savingsid=savings.savingsid WHERE expenses.email=? order by expenseid desc;"
         stmt = ibm_db.prepare(conn, sql)
         ibm_db.bind_param(stmt,1,email)
         ibm_db.execute(stmt)
@@ -184,7 +184,7 @@ class Database:
 
     def editExpenseData(self,expense,year,month,date):
         try:
-            sql = "update expenses set date = ?,month=?,year=?,expensename=?,description=?,savingsid=?,amount=? where expenseid = ?;"
+            sql = "update expenses set date =?,month=?,year=?,expensename=?,description=?,savingsid=?,amount=? where expenseid = ?;"
             prep_stmt = ibm_db.prepare(conn, sql)
             ibm_db.bind_param(prep_stmt, 1, date)
             ibm_db.bind_param(prep_stmt, 2, month)

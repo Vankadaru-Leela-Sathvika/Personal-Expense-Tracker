@@ -57,7 +57,6 @@
                 <div class="col-md-6">
                   <label for="savings" class="form-label">Savings</label>
                   <select id="savings" class="form-select" name="savings">
-                    <option selected>Savings</option>
                     {% for saving in savings%}
                       <option value='{{ saving["SAVINGSID"] }}'>{{ saving["SAVINGSNAME"] }} : {{ saving["SAVINGSTYPE"] }}</option>
                     {% endfor %}
@@ -153,7 +152,6 @@
             <div class="col-md-6">
               <label for="editsavings" class="form-label">Savings</label>
               <select id="editsavings" class="form-select" name="savings" value="">
-                <option selected>Savings</option>
                 {% for saving in savings%}
                   <option value='{{ saving["SAVINGSID"] }}'>{{ saving["SAVINGSNAME"] }} : {{ saving["SAVINGSTYPE"] }}</option>
                 {% endfor %}

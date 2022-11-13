@@ -160,6 +160,7 @@ def showRecords():
                 failureMessage = "Could Not Add Expense!!"
     user = database.fetchUser(email)
     expenses = database.fetchExpenses(email)
+    print(expenses)
     savings = database.fetchSavings(email)   
     return render_template('expenseRecords.html',user = user, expenses = expenses,savings=savings,successMessage = successMessage, failureMessage=failureMessage)
 
