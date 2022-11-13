@@ -8,10 +8,12 @@ database = Database()
 app = Flask(__name__)
 app.secret_key = "FlaskNotFoundError"
 
+#Index
 @app.route('/')
 def index():
     return render_template('index.html')
 
+#Signup
 @app.route('/signup', methods = ['GET','POST'])
 def signup():
     msg=None
@@ -30,7 +32,7 @@ def signup():
             else:
                 msg="Unable to Register!! Try again"
     return render_template('signup.html',msg=msg)
-
+#Signin
 @app.route('/signin',methods = ["GET","POST"])
 def signin():
     invalidLogin = None
@@ -51,15 +53,16 @@ def signin():
 @app.route('/signout')  
 def signOut():  
     if 'email' in session:  
-        session.pop('email',None)  
-        session.pop('name',None)
+        session.pop('email',None)
         return redirect('/')
     return redirect('/')  
     
-
+#Home
 @app.route('/home')
 def presentHome():
-    email = session['email']
+    if 'email' not in session:
+        return redirect('/')
+    email=session['email']
     user = database.fetchUser(email)
     totalExpenses = database.getExpensesTotal(email)
     totalSavings = database.getSavingsTotal(email)
@@ -68,11 +71,48 @@ def presentHome():
     expenses = database.fetchExpensesPreview(email,5)
     return render_template('home.html',user = user,expenseFilter = expenseFilter,totalExpenses = totalExpenses, savingsFilter = savingsFilter, totalSavings = totalSavings, expenses = expenses)
 
-@app.route('/profile')
+#Profile
+@app.route('/profile',methods=['GET','POST'])
 def presentProfile():
-    user = database.fetchUser(session['email'])
-    return render_template('profile.html', user = user,pageType="profile-overview")
+    pageType = "profile-overview"
+    email=session["email"]
+    profileEditSuccessful=None
+    profileEditFailed=None
+    wrongPassword=None
+    noMatch=None
+    passwordChangeSuccessful=None
+    if request.method=="POST":
+        if request.form["submit"]=="editProfile":
+            name=request.form["name"]
+            country=request.form["country"]
+            phone=request.form["phone"]
+            if database.updateUserData(email,name,country,phone):
+                profileEditSuccessful="Saved Changes!!"
+            else:
+                profileEditFailed="Couldn't save changes!!"
+            pageType="profile-edit"
+        elif request.form["submit"]=="changePassword":
+            password = request.form["password"]
+            newpassword = request.form["newpassword"]
+            renewpassword = request.form["renewpassword"]
+            fetchedPassword = database.fetchPassword(session['email'])
+            user = database.fetchUser(session['email'])
+            if fetchedPassword != password:
+                wrongPassword = "Wrong Password !!"
+                pageType="profile-change-password"
+            elif newpassword != renewpassword:
+                noMatch = "Your new Password and Re-type Password don't match!! Enter Password Again..."
+                pageType="profile-change-password"
+            elif database.updatePassword(session['email'],newpassword):
+                passwordChangeSuccessful = "Password Changed Successfully !!"
+                pageType="profile-change-password"
+            else:
+                wrongPassword = "Couldn't Change Password !!"
+                pageType="profile-change-password"
+    user = database.fetchUser(email)
+    return render_template('profile.html', user = user,pageType=pageType,profileEditSuccessful = profileEditSuccessful,profileEditFailed = profileEditFailed,wrongPassword=wrongPassword,noMatch=noMatch,passwordChangeSuccessful=passwordChangeSuccessful)
 
+#Expenses
 @app.route('/expenses')
 def presentExpenses():
     user = database.fetchUser(session['email'])
@@ -80,42 +120,6 @@ def presentExpenses():
     savings = database.fetchSavings(session['email'])
     return render_template('expenses.html',user = user, expenses = expenses,savings=savings)
 
-@app.route('/sample')
-def presentSample():
-    user = database.fetchUser(session['email'])
-    return render_template('sample.html',user=user)
-
-@app.route('/editProfile',methods=['POST','GET'])
-def editProfile():
-    global user
-    if request.method=="POST":
-        print(request.form)
-        name=request.form["name"]
-        country=request.form["country"]
-        phone=request.form["phone"]
-        email=session["email"]
-    
-        database.updateUserData(email,name,country,phone)
-        user=database.fetchUser(email)
-        if user:
-            return render_template('profile.html',user=user,pageType="profile-edit",profileEditSuccessful="Saved Changes!!")
-
-@app.route('/changePassword',methods = ['GET','POST'])
-def changePassword():
-    if request.method == 'POST':
-        password = request.form["password"]
-        newpassword = request.form["newpassword"]
-        renewpassword = request.form["renewpassword"]
-        fetchedPassword = database.fetchPassword(session['email'])
-        print(fetchedPassword)
-        user = database.fetchUser(session['email'])
-        if fetchedPassword != password:
-            return render_template('profile.html',user=user, wrongPassword = "Wrong Password !!",pageType="profile-change-password")
-        if newpassword != renewpassword:
-            return render_template('profile.html',user=user, noMatch = "Your new Password and Re-type Password don't match!! Enter Password Again...",pageType="profile-change-password")
-        if database.updatePassword(session['email'],newpassword):
-            return render_template('profile.html',user=user, passwordChangeSuccessful = "Password Changed Successfully !!",pageType="profile-change-password")
-        return render_template('profile.html',user=user, wrongPassword = "Couldn't Change Password !!",pageType="profile-change-password")
 
 @app.route('/addExpense',methods = ['GET','POST'])
 def addExpense():
@@ -126,3 +130,10 @@ def addExpense():
     if database.insertExpenseData(email,expenseid,date[0],date[1],date[2],request.form):
         return redirect('/expenses')
     return redirect('/expenses')
+
+
+#Sample
+@app.route('/sample')
+def presentSample():
+    user = database.fetchUser(session['email'])
+    return render_template('sample.html',user=user)
