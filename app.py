@@ -168,19 +168,26 @@ def presentExpenseRecords():
 def presentExpenseAnalysis():
     email=session['email']
     user=database.fetchUser(email)
+    expenses= database.getExpensesThisMonth(email)
+    dayLabels=[str(i) for i in range(1,32)]
+    print(dayLabels)
+    dayExpenseList=[0]*31
+    for expense in expenses:
+        dayExpenseList[int(expense["DATE"])-1]=expense["AMOUNT"]
     expenses=database.getExpensesThisYear(email)
-    monthLabels=str(['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December'])
+    monthLabels=['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December']
     monthExpenseList = [0]*12
     for expense in expenses:
         monthExpenseList[int(expense["MONTH"])-1]=expense["AMOUNT"]
+    
     expenses=database.getExpensesAllYears(email)
     yearLabels=[]
     yearExpenseList = []
     for expense in expenses:
         yearLabels.append(expense["YEAR"])
         yearExpenseList.append(expense["AMOUNT"])
-    yearLabels=str(yearLabels)
-    return render_template('expenseAnalysis.html',filter=filter,user=user,monthLabels=monthLabels,monthExpenseList=monthExpenseList,yearLabels=yearLabels,yearExpenseList=yearExpenseList)
+    yearLabels=yearLabels
+    return render_template('expenseAnalysis.html',filter=filter,user=user,dayLabels=dayLabels,dayExpenseList=dayExpenseList,monthLabels=monthLabels,monthExpenseList=monthExpenseList,yearLabels=yearLabels,yearExpenseList=yearExpenseList)
 
 #Sample
 @app.route('/sample')
