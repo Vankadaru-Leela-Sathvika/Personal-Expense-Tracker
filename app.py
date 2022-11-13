@@ -133,12 +133,8 @@ def addExpense():
 @app.route('/expenseRecords',methods = ['GET','POST'])
 def showRecords():
     email = session['email']
-    user = database.fetchUser(email)
-    expenses = database.fetchExpenses(email)
-    savings = database.fetchSavings(email)
     successMessage = None
     failureMessage = None
-    expense=None
     if request.method=='POST':
         if request.form['submit']=='deleteExpense':
             if database.deleteExpenseData(request.form['expenseid']):
@@ -154,7 +150,18 @@ def showRecords():
                 successMessage="Edited Expense Successfully!!"
             else:
                 failureMessage="Failed to Edit Expense!!"
-    return render_template('expenseRecords.html',user = user, expenses = expenses,savings=savings,successMessage = successMessage, failureMessage=failureMessage,expense=expense)
+        elif request.form['submit']=='addExpense':
+            email = session['email']
+            date = request.form["expensedate"].split("-")
+            expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2])+1)
+            if database.insertExpenseData(email,expenseid,date[0],date[1],date[2],request.form):
+                successMessage = "Added Expense Successfully"
+            else:
+                failureMessage = "Could Not Add Expense!!"
+    user = database.fetchUser(email)
+    expenses = database.fetchExpenses(email)
+    savings = database.fetchSavings(email)   
+    return render_template('expenseRecords.html',user = user, expenses = expenses,savings=savings,successMessage = successMessage, failureMessage=failureMessage)
 
 #Sample
 @app.route('/sample')

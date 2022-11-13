@@ -68,110 +68,100 @@
   </div>
 </div><!-- End Page Title -->
 <section>
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Reports <span>| This Year</span></h5>
-          <!-- Line Chart -->
-          <div >
-            <canvas id="reportsChart" style="max-height: 400px; display: block; box-sizing: border-box; height: 208.8px; width: 418.4px;" width="523" height="261"></canvas>
-          </div>
-          <script>
-            document.addEventListener("DOMContentLoaded", () => {
-              new Chart(document.querySelector('#reportsChart'), {
-                type: 'line',
-                data: {
-                  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                  datasets: [{
-                    label: 'Line Chart',
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                    fill: false,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                  }]
-                },
-                options: {
-                  scales: {
-                    y: {
-                      beginAtZero: true
-                    }
-                  }
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Reports <span>| This Year</span></h5>
+      <!-- Line Chart -->
+      <div >
+        <canvas id="reportsChart" style="max-height: 400px; display: block; box-sizing: border-box; height: 208.8px; width: 418.4px;" width="523" height="261"></canvas>
+      </div>
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          new Chart(document.querySelector('#reportsChart'), {
+            type: 'line',
+            data: {
+              labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+              datasets: [{
+                label: 'Line Chart',
+                data: [65, 59, 80, 81, 56, 55, 40],
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
                 }
-              });
-            });
-          </script>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Recent Expenses</h5>
-  
-          <!-- Table with hoverable rows -->
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Expense</th>
-                <th scope="col">Date</th>
-                <th scope="col">Description</th>
-                <th scope="col">Savings</th>
-                <th scope="col">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for row in expenses %}
-                <tr>
-                  <th scope="row">{{ loop.index }}</th>
-                  <td>{{ row["EXPENSENAME"] }}</td>
-                  <td>{{ row["DATE"]+"/"+row["MONTH"]+"/"+row["YEAR"] }}</td>
-                  <td>{{ row["DESCRIPTION"] }}</td>
-                  <td>{{ row["SAVINGSNAME"] }} : {{ row["SAVINGSTYPE"] }}</td>
-                  <td>{{ row["AMOUNT"] }}</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          <!-- End Table with hoverable rows -->
-        </div>
-      </div>
+              }
+            }
+          });
+        });
+      </script>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Highest Expenses</h5>
-          <!-- Table with hoverable rows -->
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Expense</th>
-                <th scope="col">Date</th>
-                <th scope="col">Description</th>
-                <th scope="col">Savings</th>
-                <th scope="col">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for row in expenses %}
-                <tr>
-                  <th scope="row">{{ loop.index }}</th>
-                  <td>{{ row["EXPENSENAME"] }}</td>
-                  <td>{{ row["DATE"]+"/"+row["MONTH"]+"/"+row["YEAR"] }}</td>
-                  <td>{{ row["DESCRIPTION"] }}</td>
-                  <td>{{ row["SAVINGSNAME"] }}</td>
-                  <td>{{ row["AMOUNT"] }}</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          <!-- End Table with hoverable rows -->
-        </div>
-      </div>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Recent Expenses</h5>
+
+      <!-- Table with hoverable rows -->
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Expense</th>
+            <th scope="col">Date</th>
+            <th scope="col">Description</th>
+            <th scope="col">Savings</th>
+            <th scope="col">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in expenses %}
+            <tr>
+              <th scope="row">{{ loop.index }}</th>
+              <td>{{ row["EXPENSENAME"] }}</td>
+              <td>{{ row["DATE"]+"/"+row["MONTH"]+"/"+row["YEAR"] }}</td>
+              <td>{{ row["DESCRIPTION"] }}</td>
+              <td>{{ row["SAVINGSNAME"] }} : {{ row["SAVINGSTYPE"] }}</td>
+              <td>{{ row["AMOUNT"] }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <!-- End Table with hoverable rows -->
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Highest Expenses</h5>
+      <!-- Table with hoverable rows -->
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Expense</th>
+            <th scope="col">Date</th>
+            <th scope="col">Description</th>
+            <th scope="col">Savings</th>
+            <th scope="col">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in expenses %}
+            <tr>
+              <th scope="row">{{ loop.index }}</th>
+              <td>{{ row["EXPENSENAME"] }}</td>
+              <td>{{ row["DATE"]+"/"+row["MONTH"]+"/"+row["YEAR"] }}</td>
+              <td>{{ row["DESCRIPTION"] }}</td>
+              <td>{{ row["SAVINGSNAME"] }}</td>
+              <td>{{ row["AMOUNT"] }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <!-- End Table with hoverable rows -->
     </div>
   </div>
 </section>

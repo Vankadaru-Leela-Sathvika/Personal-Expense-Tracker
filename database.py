@@ -93,7 +93,7 @@ class Database:
         return expenseList
     
     def fetchExpenses(self,email):
-        sql ="SELECT expenseid,expensename,date,month,year,expenses.description,savingsname,savingstype,expenses.amount FROM expenses join savings on expenses.savingsid=savings.savingsid WHERE expenses.email=? order by expenseid desc;"
+        sql ="SELECT * FROM expenses join savings on expenses.savingsid=savings.savingsid WHERE expenses.email=? order by expenseid desc;"
         stmt = ibm_db.prepare(conn, sql)
         ibm_db.bind_param(stmt,1,email)
         ibm_db.execute(stmt)
