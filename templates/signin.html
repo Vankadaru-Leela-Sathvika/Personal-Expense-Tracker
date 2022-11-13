@@ -17,17 +17,27 @@
 <div class="row d-flex justify-content-center" style="margin-top: 65px;">
     <div class="col-md-5">
         {% if msg %}
-        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <div class="alert alert-primary alert-dismissible fade in show" role="alert" >
             {{ msg }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endif %}
         {% if invalidLogin %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="alert alert-danger alert-dismissible fade in show" role="alert">
             {{ invalidLogin }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endif %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-primary alert-dismissible fade show" role="alert"  data-mdb-delay="2000">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </div>
 </div>
 <div class="row d-flex justify-content-center" style="margin-top:35px;">
@@ -36,7 +46,7 @@
             class="img-fluid" alt="Sample image">
     </div>
     <div class="col-md-5">
-        <form id="form" action="/postSignInData" method="post">
+        <form id="form" action="/signin" method="post">
             <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
                 <p class="lead fw-normal mb-0 me-3">Sign in with</p>
                 <button type="button" class="btn btn-primary btn-floating mx-1">
@@ -113,5 +123,4 @@
         </form>
     </div>
 </div>
-
 {% endblock %}

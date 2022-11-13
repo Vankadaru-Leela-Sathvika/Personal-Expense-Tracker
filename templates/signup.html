@@ -16,7 +16,7 @@
 <div class="row d-flex justify-content-center" style="margin-top: 65px;">
     <div class="col-md-5">
         {% if msg %}
-        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <div class="alert alert-primary alert-dismissible fade show" role="alert" data-mdb-delay="3000".>
             {{ msg }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -29,9 +29,9 @@
             class="img-fluid" alt="Sample image">
     </div>
     <div class="col-md-5 ">
-        <form action="/postSignUpData" method="post" id="form">
+        <form action="/signup" method="post" id="form">
             <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
-                <p class="lead fw-normal mb-0 me-3">Sign in with</p>
+                <p class="lead fw-normal mb-0 me-3">Sign Up with</p>
                 <button type="button" class="btn btn-primary btn-floating mx-1">
                     <i class="fab fa-facebook-f"></i>
                 </button>

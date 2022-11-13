@@ -1,5 +1,4 @@
 from flask import *
-
 from database import *
 from models import *
 
@@ -13,13 +12,41 @@ app.secret_key = "FlaskNotFoundError"
 def index():
     return render_template('index.html')
 
-@app.route('/signup')
+@app.route('/signup', methods = ['GET','POST'])
 def signup():
-    return render_template('signup.html')
+    msg=None
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+        account = database.fetchUser(email)
+        if account:
+            flash("You are already a member, please login using your details")
+            return redirect('signin')
+        else:
+            if database.insertSignUpUserData(email,password,name):
+                flash("Registration successfull...")
+                return redirect('signin')
+            else:
+                msg="Unable to Register!! Try again"
+    return render_template('signup.html',msg=msg)
 
-@app.route('/signin')
+@app.route('/signin',methods = ["GET","POST"])
 def signin():
-    return render_template('signin.html')
+    invalidLogin = None
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        if database.fetchUser(email):
+            fetchedPassword = database.fetchPassword(email)
+            if fetchedPassword==password:
+                session['email']=email 
+                return redirect('home')
+            else:
+                invalidLogin="Your Password is wrong!!"                
+        else:
+            invalidLogin="You have not Registered yet!!"
+    return render_template('signin.html',invalidLogin=invalidLogin)
 
 @app.route('/signout')  
 def signOut():  
@@ -57,37 +84,6 @@ def presentExpenses():
 def presentSample():
     user = database.fetchUser(session['email'])
     return render_template('sample.html',user=user)
-
-
-@app.route('/postSignUpData',methods =['POST','GET'])
-def postSignUpData():
-    if request.method == 'POST':
-        name = request.form['name']
-        email = request.form['email']
-        password = request.form['password']
-        account = database.fetchUser(email)
-        if account:
-            return render_template('signin.html', msg="You are already a member, please login using your details")
-        else:
-            if database.insertSignUpUserData(email,password,name):
-                return render_template('signin.html', msg="Registration successfull...")
-        return render_template('signup.html', msg="Unable to Register!! Try again")
-
-@app.route('/postSignInData',methods =['POST','GET'])
-def postSignInData():
-    global user
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        if database.fetchUser(email):
-            fetchedPassword = database.fetchPassword(email)
-            if fetchedPassword==password:
-                session['email']=email 
-                return redirect('home')
-            else:
-                return render_template('signin.html', invalidLogin="Your Password is wrong!!")                
-        else:
-            return render_template('signin.html', invalidLogin="You have not Registered yet!!")
 
 @app.route('/editProfile',methods=['POST','GET'])
 def editProfile():
