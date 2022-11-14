@@ -69,7 +69,12 @@ def presentHome():
     expenseFilter = "year"
     savingsFilter = "year"
     expenses = database.fetchExpensesPreview(email,5)
-    return render_template('home.html',user = user,expenseFilter = expenseFilter,totalExpenses = totalExpenses, savingsFilter = savingsFilter, totalSavings = totalSavings, expenses = expenses)
+    monthExpenses=database.getExpensesThisYear(email)
+    monthLabels=['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December']
+    monthExpenseList = [0]*12
+    for expense in monthExpenses:
+        monthExpenseList[int(expense["MONTH"])-1]=expense["AMOUNT"]
+    return render_template('home.html',user = user,expenseFilter = expenseFilter,totalExpenses = totalExpenses, savingsFilter = savingsFilter, totalSavings = totalSavings, expenses = expenses, monthLabels = monthLabels, monthExpenseList = monthExpenseList)
 
 #Profile
 @app.route('/profile',methods=['GET','POST'])
@@ -134,7 +139,7 @@ def addExpense():
     email = session['email']
     date = request.form["expensedate"].split("-")
     expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2])+1)
-    if database.insertExpenseData(email,expenseid,date[0],date[1],date[2],request.form):
+    if database.insertExpenseData(email,expenseid,date[0],date[1],date[2],request.form) and database.updateSavingsWithExpense(request.form):
         return redirect('/expenses')
     return redirect('/expenses')
 

@@ -258,3 +258,53 @@ class Database:
         ibm_db.execute(stmt)
         value = ibm_db.fetch_assoc(stmt)
         return value["DEBITAMOUNT"]
+
+    def updateSavingsWithExpense(self,form):
+        try:
+            savingsid = form["savings"]
+            expenseamount = float(form["expenseamount"])
+            sql ="SELECT savingstype,amount from savings where savingsid= ? "
+            stmt = ibm_db.prepare(conn, sql)
+            ibm_db.bind_param(stmt,1,savingsid)
+            ibm_db.execute(stmt)
+            data = ibm_db.fetch_assoc(stmt)
+            savingsAmount = float(data["AMOUNT"])
+            savingsType = data["SAVINGSTYPE"]
+            if savingsType == "credit":
+                savingsAmount+=expenseamount
+            else:
+                savingsAmount-=expenseamount
+            sql = "update savings set amount = ? where savingsid = ?;"
+            prep_stmt = ibm_db.prepare(conn, sql)
+            ibm_db.bind_param(prep_stmt, 1, savingsAmount)
+            ibm_db.bind_param(prep_stmt, 2, savingsid)
+            ibm_db.execute(prep_stmt)
+        except:
+            print("error")
+            return False 
+        return True
+        
+    def updateSavingsWithIncome(self,form):
+        try:
+            savingsid = form["savings"]
+            income = float(form["income"])
+            sql ="SELECT savingstype,amount from savings where savingsid= ? "
+            stmt = ibm_db.prepare(conn, sql)
+            ibm_db.bind_param(stmt,1,savingsid)
+            ibm_db.execute(stmt)
+            data = ibm_db.fetch_assoc(stmt)
+            savingsAmount = float(data["AMOUNT"])
+            savingsType = data["SAVINGSTYPE"]
+            if savingsType == "debit":
+                savingsAmount+=income
+            else:
+                savingsAmount-=income
+            sql = "update savings set amount = ? where savingsid = ?;"
+            prep_stmt = ibm_db.prepare(conn, sql)
+            ibm_db.bind_param(prep_stmt, 1, savingsAmount)
+            ibm_db.bind_param(prep_stmt, 2, savingsid)
+            ibm_db.execute(prep_stmt)
+        except:
+            print("error")
+            return False 
+        return True
