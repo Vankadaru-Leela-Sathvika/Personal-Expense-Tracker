@@ -381,3 +381,10 @@ function ValidateProfile(){
   }
   return true;
 }
+
+function ValidateSignIn(){
+  if( !validateEmail() || !validatePass() ){
+    return false;
+  }
+  return true;
+}
