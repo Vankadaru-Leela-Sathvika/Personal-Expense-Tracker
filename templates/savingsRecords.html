@@ -22,7 +22,7 @@
       <nav>
       <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/">Home</a></li>
-          <li class="breadcrumb-item"><a href="/savingsRecords">Savings Records</a></li>
+          <li class="breadcrumb-item"><a href="/SavingsRecords">Savings Records</a></li>
       </ol>
       </nav>
     </div>
@@ -41,33 +41,28 @@
             </div>
             <div class="modal-body">
               <!-- Multi Columns Form -->
-              <form class="row g-3" action="savingsRecords" method="post">
+              <form class="row g-3" action="SavingsRecords" method="post">
                 <div class="col-md-12">
                   <label for="savingsname" class="form-label">Savings Name</label>
                   <input type="text" class="form-control" id="savingsname" name="savingsname">
                 </div>
-                <!-- <div class="col-md-6">
-                  <label for="savingsdate" class="form-label">Date</label>
-                  <input type="date" class="form-control" id="savingsdate" name="savingsdate">
-                </div> -->
                 <div class="col-12">
                   <label for="savingsDescription" class="form-label">Description</label>
                   <textarea class="form-control" id="savingsDescription" name="savingsdescription" placeholder="write savings split up...."></textarea>
                 </div>
                 <div class="col-md-6">
                   <label for="savings" class="form-label">Savings Type</label>
-                  <select id="savings" class="form-select" name="savings">
-                    {% for saving in savings%}
-                      <option value='{{ saving["SAVINGSID"] }}'>{{ saving["SAVINGSNAME"] }} : {{ saving["SAVINGSTYPE"] }}</option>
-                    {% endfor %}
+                    <select id="savings" class="form-select" name="savingstype" onkeyup="validateSavingType()">
+                      <option value='credit'>Credit</option>
+                      <option value='debit'>Debit</option>
                   </select>
                 </div>
                 <div class="col-md-6">
-                  <label for="savingsAmount" class="form-label">Amount Spent</label>
+                  <label for="savingsAmount" class="form-label">Amount</label>
                   <input type="text" class="form-control" id="savingsAmount" name="savingsamount">
                 </div>
                 <div class="text-center">
-                  <button type="submit" class="btn btn-primary" name="submit" value="addsavings">Add Finance</button>
+                  <button type="submit" class="btn btn-primary" name="submit" value="addSaving">Add Finance</button>
                   <button type="reset" class="btn btn-secondary">Reset</button>
                 </div>
               </form><!-- End Multi Columns Form -->
@@ -86,39 +81,33 @@
         <h5 class="card-title">Debit Finance</h5>
 
         <!-- Table with hoverable rows -->
-        <table class="table table-hover" id="savings-records">
+        <table class="table table-hover" id="debit-savings-records">
           <thead>
             <tr>
               <th scope="col">#</th>
               <th scope="col">Name</th>
-              <!-- <th scope="col">Date</th> -->
               <th scope="col">Description</th>
-              <th scope="col">Savings</th>
-              <!-- <th scope="col">Savings Type</th> -->
               <th scope="col">Amount</th>
-              <!-- <th scope="col">Edit</th> -->
+              <th scope="col">Edit</th>
             </tr>
           </thead>
           <tbody>
-            {% for row in savingss %}
+            {% for row in debitSavings %}
               <tr>
                 <th scope="row">{{ loop.index }}</th>
-                <td>{{ row["savingsNAME"] }}</td>
-                <!-- <td>{{ row["DATE"]+"/"+row["MONTH"]+"/"+row["YEAR"] }}</td> -->
-                <td>{{ row["DESCRIPTION"] }}</td>
                 <td>{{ row["SAVINGSNAME"] }}</td>
-                <!-- <td>{{ row["SAVINGSTYPE"] }}</td> -->
+                <td>{{ row["DESCRIPTION"] }}</td>
                 <td>{{ row["AMOUNT"] }}</td>
-                <!-- <td>
-                  <button type="button" class="btn btn-warning" id="edit-savings-form" data-bs-toggle="modal" data-bs-target="#editsavingsModal" value='{{ row["savingsID"] }}'>
+                <td>
+                  <button type="button" class="btn btn-warning" id="edit-savings-form" data-bs-toggle="modal" data-bs-target="#editSavingsModal" value='{{ row["savingsID"] }}'>
                   <i class="fa fa-pen-to-square"></i>
                   </button>
 
                   <form action="savingsRecords" method="post">
-                    <input type="text" name="savingsid" value='{{ row["savingsID"] }}' hidden/>
-                    <button class="btn btn-danger" type="submit" name="submit" value='deletesavings'><i class="fa fa-trash"></i></button>
+                    <input type="text" name="savingsid" value='{{ row["SAVINGSID"] }}' hidden/>
+                    <button class="btn btn-danger" type="submit" name="submit" value='deletesaving'><i class="fa fa-trash"></i></button>
                   </form>
-                </td> -->
+                </td>
               </tr>
             {% endfor %}
           </tbody>
@@ -126,52 +115,7 @@
         <!-- End Table with hoverable rows -->
       </div>
   </div>
-<div class="modal fade " id="editsavingsModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Edit savings</h5>
-          <button type="reset" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <!-- Multi Columns Form -->
-          <form class="row g-3" action="/savingsRecords" method="post">
-            <input type="text" class="form-control" id="editsavingsid" name="savingsid" value="" hidden>
-            <div class="col-md-12">
-              <label for="editsavingsname" class="form-label">savings Name</label>
-              <input type="text" class="form-control" id="editsavingsname" name="savingsname" value="">
-            </div>
-            <!-- <div class="col-md-6">
-              <label for="editsavingsdate" class="form-label">Date</label>
-              <input type="date" class="form-control" id="editsavingsdate" name="savingsdate">
-            </div> -->
-            <div class="col-12">
-              <label for="editsavingsdescription" class="form-label">Description</label>
-              <textarea class="form-control" id="editsavingsdescription" name="savingsdescription" placeholder="write savings split up...."></textarea>
-            </div>
-            <div class="col-md-6">
-              <label for="editsavings" class="form-label">Savings</label>
-              <select id="editsavings" class="form-select" name="savings" value="">
-                {% for saving in savings%}
-                  <option value='{{ saving["SAVINGSID"] }}'>{{ saving["SAVINGSNAME"] }} : {{ saving["SAVINGSTYPE"] }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label for="editsavingsamount" class="form-label">Amount Spent</label>
-              <input type="text" class="form-control" id="editsavingsamount" name="savingsamount">
-            </div>
-            <div class="text-center">
-              <button type="submit" class="btn btn-primary" name="submit" value="editsavings">Edit savings</button>
-              <button type="reset" class="btn btn-secondary">Reset</button>
-            </div>
-          </form><!-- End Multi Columns Form -->
-        </div>
-        <div class="modal-footer">
-        </div>
-      </div>
-    </div>
-</div><!-- End Edit savings Modal-->
+
 </section>
 <section class="section">
      <div class="card">
@@ -179,37 +123,31 @@
          <h5 class="card-title">Credit Finance</h5>
  
          <!-- Table with hoverable rows -->
-         <table class="table table-hover" id="savings-records">
+         <table class="table table-hover" id="credit-savings-records">
            <thead>
              <tr>
                <th scope="col">#</th>
                <th scope="col">Name</th>
-               <!-- <th scope="col">Date</th> -->
                <th scope="col">Description</th>
-               <th scope="col">Savings</th>
-               <!-- <th scope="col">Savings Type</th> -->
                <th scope="col">Amount</th>
                <th scope="col">Edit</th>
              </tr>
            </thead>
            <tbody>
-             {% for row in savingss %}
+             {% for row in creditSavings %}
                <tr>
                  <th scope="row">{{ loop.index }}</th>
-                 <td>{{ row["savingsNAME"] }}</td>
-                 <!-- <td>{{ row["DATE"]+"/"+row["MONTH"]+"/"+row["YEAR"] }}</td> -->
-                 <td>{{ row["DESCRIPTION"] }}</td>
                  <td>{{ row["SAVINGSNAME"] }}</td>
-                 <!-- <td>{{ row["SAVINGSTYPE"] }}</td> -->
+                 <td>{{ row["DESCRIPTION"] }}</td>
                  <td>{{ row["AMOUNT"] }}</td>
                  <td>
-                   <button type="button" class="btn btn-warning" id="edit-savings-form" data-bs-toggle="modal" data-bs-target="#editsavingsModal" value='{{ row["savingsID"] }}'>
+                   <button type="button" class="btn btn-warning" id="edit-savings-form" data-bs-toggle="modal" data-bs-target="#editSavingsModal" value='{{ row["savingsID"] }}'>
                    <i class="fa fa-pen-to-square"></i>
                    </button>
  
                    <form action="savingsRecords" method="post">
-                     <input type="text" name="savingsid" value='{{ row["savingsID"] }}' hidden/>
-                     <button class="btn btn-danger" type="submit" name="submit" value='deletesavings'><i class="fa fa-trash"></i></button>
+                     <input type="text" name="savingsid" value='{{ row["SAVINGSID"] }}' hidden/>
+                     <button class="btn btn-danger" type="submit" name="submit" value='deletesaving'><i class="fa fa-trash"></i></button>
                    </form>
                  </td>
                </tr>
@@ -219,7 +157,7 @@
          <!-- End Table with hoverable rows -->
        </div>
    </div>
- <div class="modal fade " id="editsavingsModal" tabindex="-1">
+ <div class="modal fade " id="editSavingsModal" tabindex="-1">
      <div class="modal-dialog modal-lg">
        <div class="modal-content">
          <div class="modal-header">
@@ -228,34 +166,29 @@
          </div>
          <div class="modal-body">
            <!-- Multi Columns Form -->
-           <form class="row g-3" action="/savingsRecords" method="post">
+           <form class="row g-3" action="/SavingsRecords" method="post">
              <input type="text" class="form-control" id="editsavingsid" name="savingsid" value="" hidden>
              <div class="col-md-12">
                <label for="editsavingsname" class="form-label">savings Name</label>
                <input type="text" class="form-control" id="editsavingsname" name="savingsname" value="">
              </div>
-             <!-- <div class="col-md-6">
-               <label for="editsavingsdate" class="form-label">Date</label>
-               <input type="date" class="form-control" id="editsavingsdate" name="savingsdate">
-             </div> -->
              <div class="col-12">
                <label for="editsavingsdescription" class="form-label">Description</label>
                <textarea class="form-control" id="editsavingsdescription" name="savingsdescription" placeholder="write savings split up...."></textarea>
              </div>
              <div class="col-md-6">
-               <label for="editsavings" class="form-label">Savings</label>
-               <select id="editsavings" class="form-select" name="savings" value="">
-                 {% for saving in savings%}
-                   <option value='{{ saving["SAVINGSID"] }}'>{{ saving["SAVINGSNAME"] }} : {{ saving["SAVINGSTYPE"] }}</option>
-                 {% endfor %}
+               <label for="editsavingstype" class="form-label">Savings</label>
+               <select id="editsavingstpe" class="form-select" name="savingstype" value="">
+                <option value='credit'>Credit</option>
+                <option value='debit'>Debit</option>
                </select>
              </div>
              <div class="col-md-6">
-               <label for="editsavingsamount" class="form-label">Amount Spent</label>
+               <label for="editsavingsamount" class="form-label">Amount</label>
                <input type="text" class="form-control" id="editsavingsamount" name="savingsamount">
              </div>
              <div class="text-center">
-               <button type="submit" class="btn btn-primary" name="submit" value="editsavings">Edit savings</button>
+               <button type="submit" class="btn btn-primary" name="submit" value="editsavings">Edit Savings</button>
                <button type="reset" class="btn btn-secondary">Reset</button>
              </div>
            </form><!-- End Multi Columns Form -->
@@ -270,9 +203,15 @@
 
 <script>
   $(document).ready(function () {
-    $('#savings-records').DataTable({
+    $('#credit-savings-records').DataTable({
         order: [[1, 'desc']],
     });
+});
+
+$(document).ready(function () {
+  $('#debit-savings-records').DataTable({
+      order: [[1, 'desc']],
+  });
 });
 </script>
 
@@ -281,16 +220,15 @@
     $('.btn-warning').click(function(){
       var savingsid = $(this).val();
       $.ajax({
-        url:'/savingsRecords',
+        url:'/SavingsRecords',
         type:'post',
-        data: {'submit':'getsavingsValues','savingsid':savingsid},
+        data: {'submit':'getSavingsValues','savingsid':savingsid},
         success: function(data) {
           var savings = JSON.parse(data);
-          $('#editsavingsid').val(savings['savingsID']);
-          $('#editsavingsname').val(savings['savingsNAME']);
-          // $('#editsavingsdate').val(savings['YEAR']+"-"+savings["MONTH"]+"-"+savings["DATE"]);
+          $('#editsavingsid').val(savings['SAVINGSID']);
+          $('#editsavingsname').val(savings['SAVINGSNAME']);
           $('#editsavingsdescription').val(savings['DESCRIPTION']);
-          $('#editsavings').val(savings['SAVINGSID']);
+          $('#editsavingstype').val(savings['SAVINGSTYPE']);
           $('#editsavingsamount').val(savings['AMOUNT']);
         }
       })

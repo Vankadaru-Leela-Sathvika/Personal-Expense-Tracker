@@ -206,47 +206,53 @@ def presentExpenseAnalysis():
 def presentSavings():
     email=session['email']
     user=database.fetchUser(email)
-    return render_template('savings.html',user=user)
+    creditsavings = database.getCreditSavingsAmount(email)
+    debitsavings = database.getDebitSavingsAmount(email)
+    print(creditsavings,debitsavings)
+    recentsavings = database.getRecentSavings(email)
+    highestsavings = database.getHighestSavings(email)
+    print(recentsavings,highestsavings)
+    return render_template('savings.html',user=user,creditsavings = creditsavings, debitsavings = debitsavings, recentsavings = recentsavings, highestsavings = highestsavings)
 
-@app.route('/addSavings')
+@app.route('/addSavings', methods = ['POST','GET'])
 def addSavings():
     email = session['email']
-    savingsid=email+str(database.getTotalSavingsCount(email)+1)
-    if database.insertSavingsData(email,savingsid,request.form):
-        return redirect('/savings')
-    return redirect('/savings')
+    if request.method == "POST":
+        savingsid=email+str(database.getTotalSavingsCount(email)+1)
+        if database.insertSavingsData(email,savingsid,request.form,):
+            return redirect('/Savings')
+    return redirect('/Savings')
 
-@app.route('/SavingsRecords')
+@app.route('/SavingsRecords',methods = ['GET','POST'])
 def presentSavingsRecords():
     email = session['email']
     successMessage = None
     failureMessage = None
     if request.method=='POST':
-        if request.form['submit']=='deleteExpense':
-            if database.deleteExpenseData(request.form['expenseid']):
+        if request.form['submit']=='deleteSaving':
+            if database.deleteSavingData(request.form['savingsid']):
                 successMessage = "Deleted SuccessFully"
             else:
-                failureMessage = "Unable to delete the Expense!!"
-        elif request.form['submit']=='getExpenseValues':
-            expense = database.getExpenseData(request.form['expenseid'])
-            return json.dumps(expense)
-        elif request.form['submit']=='editExpense':
-            date = request.form["expensedate"].split("-")
-            if database.editExpenseData(request.form,year=date[0],month=date[1],date=date[2]):
-                successMessage="Edited Expense Successfully!!"
+                failureMessage = "Unable to delete the Saving!!"
+        elif request.form['submit']=='getSavingsValues':
+            print(request.form)
+            saving = database.getSavings(request.form['savingsid'])
+            return json.dumps(saving)
+        elif request.form['submit']=='editsavings':
+            if database.editSavingsData(request.form):
+                successMessage="Edited Saving Successfully!!"
             else:
-                failureMessage="Failed to Edit Expense!!"
-        elif request.form['submit']=='addExpense':
-            email = session['email']
-            date = request.form["expensedate"].split("-")
-            expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2])+1)
-            if database.insertExpenseData(email,expenseid,date[0],date[1],date[2],request.form):
-                successMessage = "Added Expense Successfully"
+                failureMessage="Failed to Saving Expense!!"
+        elif request.form['submit']=='addSaving':
+            savingsid=email+str(database.getTotalSavingsCount(email)+1)
+            if database.insertSavingsData(email,savingsid,request.form,):
+                successMessage = "Added Saving Successfully"
             else:
-                failureMessage = "Could Not Add Expense!!"
+                failureMessage = "Could Not Add Saving!!"
     user = database.fetchUser(email)
-    savings = database.fetchSavings(email)   
-    return render_template('savingsRecords.html',user = user, expenses = expenses,savings=savings,successMessage = successMessage, failureMessage=failureMessage)
+    creditSavings = database.fetchSavingsWithType(email,'credit')
+    debitSavings = database.fetchSavingsWithType(email,'debit')
+    return render_template('savingsRecords.html',user = user,creditSavings = creditSavings, debitSavings = debitSavings,successMessage = successMessage, failureMessage=failureMessage)
 
 
 @app.route('/SavingsAnalysis')

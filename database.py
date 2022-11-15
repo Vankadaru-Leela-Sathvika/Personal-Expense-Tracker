@@ -3,6 +3,7 @@ import ibm_db
 import ibm_boto3
 from ibm_botocore.client import Config, ClientError
 from datetime import *
+from models import *
 
 conn = ibm_db.connect("DATABASE="+credentials.DB2_DATABASE_NAME+";HOSTNAME="+credentials.DB2_HOST_NAME+";PORT="+credentials.DB2_PORT+";SECURITY=SSL;SSLServerCertificate=DigiCertGlobalRootCA.crt;UID="+credentials.DB2_UID+";PWD="+credentials.DB2_PWD+"",'','')
 
@@ -258,6 +259,65 @@ class Database:
         value = ibm_db.fetch_assoc(stmt)
         return value["DEBITAMOUNT"]
 
+    def getSavings(self, savingsid):
+        sql ="SELECT * from savings where savingsid = ?;"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,savingsid)
+        ibm_db.execute(stmt)
+        savings = ibm_db.fetch_assoc(stmt)
+        return savings
+
+    def getRecentSavings(self, email, limit = 5):
+        sql ="SELECT * from savings where email = ? and savingsid in (select savingsid from expenses where email=? order by year desc, month desc, date desc) limit ?;"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.bind_param(stmt,2,email)
+        ibm_db.bind_param(stmt,3,limit)
+        ibm_db.execute(stmt)
+        saving = ibm_db.fetch_both(stmt)
+        savingsList = []
+        while saving != False:
+            savingsList.append(saving)
+            saving = ibm_db.fetch_both(stmt)
+        return savingsList
+
+    def getHighestSavings(self, email, limit = 5):
+        sql ="SELECT * from savings where email = ? order by amount desc limit ?;"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.bind_param(stmt,2,limit)
+        ibm_db.execute(stmt)
+        saving = ibm_db.fetch_both(stmt)
+        savingsList = []
+        while saving != False:
+            savingsList.append(saving)
+            saving = ibm_db.fetch_both(stmt)
+        return savingsList
+
+    def getCreditSavingsAmount(self,email):
+        sql ="SELECT SUM(amount) as creditamount from savings where email=? and savingstype='credit';"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.execute(stmt)
+        value = ibm_db.fetch_assoc(stmt)
+        return value["CREDITAMOUNT"]
+    
+    def getDebitSavingsAmount(self,email):
+        sql ="SELECT SUM(amount) as debitamount from savings where email=? and savingstype='debit';"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.execute(stmt)
+        value = ibm_db.fetch_assoc(stmt)
+        return value["DEBITAMOUNT"]
+    
+    def getDebitExpenses(self,email):
+        sql ="SELECT SUM(expenses.amount) as debitamount from expenses join savings on expenses.savingsid=savings.savingsid where expenses.email=? and savingstype='debit';"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.execute(stmt)
+        value = ibm_db.fetch_assoc(stmt)
+        return value["DEBITAMOUNT"]
+
     def updateSavingsWithExpense(self,form):
         try:
             savingsid = form["savings"]
@@ -316,18 +376,7 @@ class Database:
         value = ibm_db.fetch_assoc(stmt)
         return value["COUNT"]
 
-    def fetchCreditSavings(self,email):
-        sql ="SELECT savingsid,savingsname,savingsType from savings where email = ?"
-        stmt = ibm_db.prepare(conn, sql)
-        ibm_db.bind_param(stmt,1,email)
-        ibm_db.execute(stmt)
-        saving = ibm_db.fetch_both(stmt)
-        savingsList = []
-        while saving != False:
-            savingsList.append(saving)
-            saving = ibm_db.fetch_both(stmt)
-        return savingsList
-    def fetchDebitSavings(self,email, type):
+    def fetchSavingsWithType(self,email, type):
         sql ="SELECT * from savings where email = ? and savingstype = ?"
         stmt = ibm_db.prepare(conn, sql)
         ibm_db.bind_param(stmt,1,email)
@@ -339,15 +388,17 @@ class Database:
             savingsList.append(saving)
             saving = ibm_db.fetch_both(stmt)
         return savingsList
+        
     def insertSavingsData(self,email,savingsid,saving):
+        print(saving)
         try:
-            insert_sql = "INSERT INTO SAVINGS VALUES(?,?,?,?,?);"
+            insert_sql = "INSERT INTO SAVINGS VALUES(?,?,?,?,?,?);"
             prep_stmt = ibm_db.prepare(conn, insert_sql)
             ibm_db.bind_param(prep_stmt, 1, savingsid)
             ibm_db.bind_param(prep_stmt, 2, saving["savingsname"])
             ibm_db.bind_param(prep_stmt, 3, saving["savingstype"])
             ibm_db.bind_param(prep_stmt, 4, saving["savingsdescription"])
-            ibm_db.bind_param(prep_stmt, 5, saving["amount"])
+            ibm_db.bind_param(prep_stmt, 5, saving["savingsamount"])
             ibm_db.bind_param(prep_stmt, 6, email)
             ibm_db.execute(prep_stmt)
         except:
@@ -355,15 +406,15 @@ class Database:
             return False
         return True
     
-    def editSavingsData(self,savingsid,saving):
+    def editSavingsData(self,saving):
         try:
             sql = "update savings set savingsname=?,description=?,savingstype=?,amount=? where savingsid = ?;"
             prep_stmt = ibm_db.prepare(conn, sql)
             ibm_db.bind_param(prep_stmt, 1, saving["savingsname"])
             ibm_db.bind_param(prep_stmt, 2, saving["savingsdescription"])
             ibm_db.bind_param(prep_stmt, 3, saving["savingstype"])
-            ibm_db.bind_param(prep_stmt, 4, saving["amount"])
-            ibm_db.bind_param(prep_stmt, 5, savingsid)
+            ibm_db.bind_param(prep_stmt, 4, saving["savingsamount"])
+            ibm_db.bind_param(prep_stmt, 5, saving["savingsid"])
             ibm_db.execute(prep_stmt)
         except:
             return False 
@@ -392,6 +443,14 @@ class Database:
         except:
             return False 
         return True
+
+    def getTotalSavingsCount(self,email): 
+        sql = "SELECT COUNT(*) as COUNT from savings where email = ?"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.execute(stmt)
+        value = ibm_db.fetch_assoc(stmt)
+        return value["COUNT"]
 
     
     

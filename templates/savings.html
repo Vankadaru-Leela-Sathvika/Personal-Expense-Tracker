@@ -13,11 +13,11 @@
       </nav>
     </div>
     <div class="col-md-2">
-      <!-- Add Expense Modal -->
-      <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
+      <!-- Add savings Modal -->
+      <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addSavingsModal">
         Add Finance
       </button>
-      <div class="modal fade " id="addExpenseModal" tabindex="-1">
+      <div class="modal fade " id="addSavingsModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
@@ -26,33 +26,27 @@
             </div>
             <div class="modal-body">
               <!-- Multi Columns Form -->
-              <form class="row g-3" action="/addExpense" method="post" onclick="return ValidateExpenseForm()">
+              <form class="row g-3" action="addSavings" method="POST" onclick="return ValidatesavingsForm()">
                 <div class="col-md-12 form_group">
-                  <label for="expensename" class="form-label">Savings Name</label>
-                  <input type="text" class="form-control" id="expensename" name="expensename" onkeyup="validateExpName()">
-                  <div id="expensename-error"></div>
+                  <label for="savingsname" class="form-label">Savings Name</label>
+                  <input type="text" class="form-control" id="savingsname" name="savingsname" onkeyup="validateExpName()">
+                  <div id="savingsname-error"></div>
                 </div>
-                <!-- <div class="col-md-6 form_group">
-                  <label for="expensedate" class="form-label">Date</label>
-                  <input type="date" class="form-control" id="expensedate" name="expensedate" onkeyup="validateDate()">
-                  <div id="date-error"></div>
-                </div> -->
                 <div class="col-12 form_group">
-                  <label for="expenseDescription" class="form-label">Description</label>
-                  <textarea class="form-control" id="expenseDescription" name="expensedescription" placeholder="write expense split up...."></textarea>
+                  <label for="savingsDescription" class="form-label">Description</label>
+                  <textarea class="form-control" id="savingsDescription" name="savingsdescription" placeholder="write savings split up...."></textarea>
                 </div>
                 <div class="col-md-6 form_group">
                   <label for="savings" class="form-label">Savings Type</label>
-                  <select id="savings" class="form-select" name="savings" onkeyup="validateSavingType()">
-                    {% for saving in savings%}
-                      <option value='{{ saving["SAVINGSID"] }}'>{{ saving["SAVINGSNAME"] }} : {{ saving["SAVINGSTYPE"] }}</option>
-                    {% endfor %}
+                  <select id="savings" class="form-select" name="savingstype" onkeyup="validateSavingType()">
+                      <option value='credit'>Credit</option>
+                      <option value='debit'>Debit</option>
                   </select>
                   <div id="saving-error"></div>
                 </div>
                 <div class="col-md-6 form_group">
-                  <label for="expenseAmount" class="form-label">Amount Spent</label>
-                  <input type="text" class="form-control" id="expenseAmount" name="expenseamount" onkeyup="validateAmount()">
+                  <label for="savingsAmount" class="form-label">Amount</label>
+                  <input type="text" class="form-control" id="savingsAmount" name="savingsamount" onkeyup="validateAmount()">
                   <div id="amount-error"></div>
                 </div>
                 <div class="text-center">
@@ -65,7 +59,7 @@
             </div>
           </div>
         </div>
-      </div><!-- End Add Expense Modal-->
+      </div><!-- End Add savings Modal-->
     </div>
   </div>
 </div><!-- End Page Title -->
@@ -74,7 +68,7 @@
   <div class="col-md-4">
     <div class="row">
       <div class="col-md-12">
-        <div class="card info-card expense-card">
+        <div class="card info-card savings-card">
           <div class="card-body">
             <h5 class="card-title">Credit amount spent</h5>
 
@@ -83,7 +77,7 @@
                 <i class="bi bi-credit-card"></i>
               </div>
               <div class="ps-3">
-                <h6>Rs. {{ creditExpenses }}</h6>
+                <h6>Rs. {{ creditsavings }}</h6>
                 <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
               </div>
             </div>
@@ -102,7 +96,7 @@
                 <i class="bi bi-piggy-bank-fill"></i>
               </div>
               <div class="ps-3">
-                <h6>Rs. {{ debitExpenses }}</h6>
+                <h6>Rs. {{ debitsavings }}</h6>
                 <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
 
               </div>
@@ -128,7 +122,7 @@
                 labels: {{ monthLabels | safe }},
                 datasets: [{
                   label: 'Line Chart',
-                  data: {{ monthExpenseList | safe }} ,
+                  data: {{ monthsavingsList | safe }} ,
                   fill: false,
                   borderColor: 'rgb(75, 192, 192)',
                   tension: 0.3
@@ -159,20 +153,18 @@
           <tr>
             <th scope="col">#</th>
             <th scope="col">Savings Name</th>
-            <!-- <th scope="col">Date</th> -->
             <th scope="col">Description</th>
             <th scope="col">Savings</th>
             <th scope="col">Amount</th>
           </tr>
         </thead>
         <tbody>
-          {% for row in expenses %}
+          {% for row in recentsavings %}
             <tr>
               <th scope="row">{{ loop.index }}</th>
-              <td>{{ row["EXPENSENAME"] }}</td>
-              <!-- <td>{{ row["DATE"]+"/"+row["MONTH"]+"/"+row["YEAR"] }}</td> -->
+              <td>{{ row["SAVINGSNAME"] }}</td>
               <td>{{ row["DESCRIPTION"] }}</td>
-              <td>{{ row["SAVINGSNAME"] }} : {{ row["SAVINGSTYPE"] }}</td>
+              <td>{{ row["SAVINGSTYPE"] }}</td>
               <td>{{ row["AMOUNT"] }}</td>
             </tr>
           {% endfor %}
@@ -190,20 +182,18 @@
           <tr>
             <th scope="col">#</th>
             <th scope="col">Savings Name</th>
-            <!-- <th scope="col">Date</th> -->
             <th scope="col">Description</th>
             <th scope="col">Savings</th>
             <th scope="col">Amount</th>
           </tr>
         </thead>
         <tbody>
-          {% for row in expenses %}
+          {% for row in highestsavings %}
             <tr>
               <th scope="row">{{ loop.index }}</th>
-              <td>{{ row["EXPENSENAME"] }}</td>
-              <td>{{ row["DATE"]+"/"+row["MONTH"]+"/"+row["YEAR"] }}</td>
-              <td>{{ row["DESCRIPTION"] }}</td>
               <td>{{ row["SAVINGSNAME"] }}</td>
+              <td>{{ row["DESCRIPTION"] }}</td>
+              <td>{{ row["SAVINGSTYPE"] }}</td>
               <td>{{ row["AMOUNT"] }}</td>
             </tr>
           {% endfor %}

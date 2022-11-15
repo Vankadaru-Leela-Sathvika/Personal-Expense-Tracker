@@ -6,7 +6,7 @@
           <nav>
                <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                    <li class="breadcrumb-item"><a href="/expenseAnalysis">Expense Analysis</a></li><!--Change Here-->
+                    <li class="breadcrumb-item"><a href="/SavingsAnalysis">Savings Analysis</a></li><!--Change Here-->
                </ol>
           </nav>
      </div><!-- End Page Title -->
@@ -28,7 +28,7 @@
                    <div class="tab-pane fade show active" id="bordered-justified-barChartThisMonth" role="tabpanel" aria-labelledby="barChartThisMonth-tab">
                     <div class="card">
                          <div class="card-body">
-                           <h5 class="card-title">Reports <span>| This Month</span></h5>
+                           <h5 class="card-title">Reports <span>| Debit</span></h5>
                            <!-- Bar Chart -->
                            <canvas id="barChartThisMonth" style="max-height: 400px;"></canvas>
                            <script>
@@ -39,7 +39,7 @@
                                      labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
                                      datasets: [{
                                      label: 'Bar Chart',
-                                     data: {{ dayExpenseList }},
+                                     data: {{ creditSavingsList }},
                                      backgroundColor: [
                                           'rgba(255, 99, 132, 0.2)',
                                           'rgba(255, 159, 64, 0.2)',
@@ -78,7 +78,7 @@
                    <div class="tab-pane fade" id="bordered-justified-barChartThisYear" role="tabpanel" aria-labelledby="barChartThisYear-tab">
                     <div class="card">
                          <div class="card-body">
-                           <h5 class="card-title">Reports <span>| This Year</span></h5>
+                           <h5 class="card-title">Reports <span>| Credit</span></h5>
                            <!-- Bar Chart -->
                               <canvas id="barChartThisYear" style="max-height: 400px;"></canvas>
                               <script>
@@ -89,7 +89,7 @@
                                         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December'],
                                         datasets: [{
                                         label: 'Bar Chart',
-                                        data: {{ monthExpenseList }},
+                                        data: {{ debitSavingsList }},
                                         backgroundColor: [
                                              'rgba(255, 99, 132, 0.2)',
                                              'rgba(255, 159, 64, 0.2)',
