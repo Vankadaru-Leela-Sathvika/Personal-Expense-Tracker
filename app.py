@@ -173,7 +173,6 @@ def presentExpenseRecords():
                 failureMessage = "Could Not Add Expense!!"
     user = database.fetchUser(email)
     expenses = database.fetchExpenses(email)
-    print(expenses)
     savings = database.fetchSavings(email)   
     return render_template('expenseRecords.html',user = user, expenses = expenses,savings=savings,successMessage = successMessage, failureMessage=failureMessage)
 
@@ -209,11 +208,46 @@ def presentSavings():
     user=database.fetchUser(email)
     return render_template('savings.html',user=user)
 
+@app.route('/addSavings')
+def addSavings():
+    email = session['email']
+    savingsid=email+str(database.getTotalSavingsCount(email)+1)
+    if database.insertSavingsData(email,savingsid,request.form):
+        return redirect('/savings')
+    return redirect('/savings')
+
 @app.route('/SavingsRecords')
 def presentSavingsRecords():
-    email=session['email']
-    user=database.fetchUser(email)
-    return render_template('savingsRecords.html',user=user)
+    email = session['email']
+    successMessage = None
+    failureMessage = None
+    if request.method=='POST':
+        if request.form['submit']=='deleteExpense':
+            if database.deleteExpenseData(request.form['expenseid']):
+                successMessage = "Deleted SuccessFully"
+            else:
+                failureMessage = "Unable to delete the Expense!!"
+        elif request.form['submit']=='getExpenseValues':
+            expense = database.getExpenseData(request.form['expenseid'])
+            return json.dumps(expense)
+        elif request.form['submit']=='editExpense':
+            date = request.form["expensedate"].split("-")
+            if database.editExpenseData(request.form,year=date[0],month=date[1],date=date[2]):
+                successMessage="Edited Expense Successfully!!"
+            else:
+                failureMessage="Failed to Edit Expense!!"
+        elif request.form['submit']=='addExpense':
+            email = session['email']
+            date = request.form["expensedate"].split("-")
+            expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2])+1)
+            if database.insertExpenseData(email,expenseid,date[0],date[1],date[2],request.form):
+                successMessage = "Added Expense Successfully"
+            else:
+                failureMessage = "Could Not Add Expense!!"
+    user = database.fetchUser(email)
+    savings = database.fetchSavings(email)   
+    return render_template('savingsRecords.html',user = user, expenses = expenses,savings=savings,successMessage = successMessage, failureMessage=failureMessage)
+
 
 @app.route('/SavingsAnalysis')
 def presentSavingsAnalysis():
@@ -240,6 +274,16 @@ def presentLoanTracker():
     email=session['email']
     user=database.fetchUser(email)
     return render_template('LoanTracker.html',user=user)
+
+@app.route('/addLoan')
+def addLoan():
+    email = session['email']
+    if request.method == "POST":
+        date = request.form["expensedate"].split("-")
+        expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2])+1)
+        if database.insertExpenseData(email,expenseid,date[0],date[1],date[2],request.form) and database.updateSavingsWithExpense(request.form):
+            return redirect('/expenses')
+        return redirect('/expenses')
 
 #Sample
 @app.route('/sample')

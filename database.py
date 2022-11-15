@@ -2,7 +2,6 @@ import credentials
 import ibm_db
 import ibm_boto3
 from ibm_botocore.client import Config, ClientError
-from models import *
 from datetime import *
 
 conn = ibm_db.connect("DATABASE="+credentials.DB2_DATABASE_NAME+";HOSTNAME="+credentials.DB2_HOST_NAME+";PORT="+credentials.DB2_PORT+";SECURITY=SSL;SSLServerCertificate=DigiCertGlobalRootCA.crt;UID="+credentials.DB2_UID+";PWD="+credentials.DB2_PWD+"",'','')
@@ -241,7 +240,7 @@ class Database:
             expensesList.append(expense)
             expense = ibm_db.fetch_both(stmt)
         return expensesList
-    
+
     def getCreditExpenses(self,email):
         sql ="SELECT SUM(expenses.amount) as creditamount from expenses join savings on expenses.savingsid=savings.savingsid where expenses.email=? and savingstype='credit';"
         stmt = ibm_db.prepare(conn, sql)
@@ -308,3 +307,91 @@ class Database:
             print("error")
             return False 
         return True
+    
+    def getSavingsCount(self,email):
+        sql = "SELECT COUNT(*) as COUNT from expenses where email = ? "
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.execute(stmt)
+        value = ibm_db.fetch_assoc(stmt)
+        return value["COUNT"]
+
+    def fetchCreditSavings(self,email):
+        sql ="SELECT savingsid,savingsname,savingsType from savings where email = ?"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.execute(stmt)
+        saving = ibm_db.fetch_both(stmt)
+        savingsList = []
+        while saving != False:
+            savingsList.append(saving)
+            saving = ibm_db.fetch_both(stmt)
+        return savingsList
+    def fetchDebitSavings(self,email, type):
+        sql ="SELECT * from savings where email = ? and savingstype = ?"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.bind_param(stmt,2,type)
+        ibm_db.execute(stmt)
+        saving = ibm_db.fetch_both(stmt)
+        savingsList = []
+        while saving != False:
+            savingsList.append(saving)
+            saving = ibm_db.fetch_both(stmt)
+        return savingsList
+    def insertSavingsData(self,email,savingsid,saving):
+        try:
+            insert_sql = "INSERT INTO SAVINGS VALUES(?,?,?,?,?);"
+            prep_stmt = ibm_db.prepare(conn, insert_sql)
+            ibm_db.bind_param(prep_stmt, 1, savingsid)
+            ibm_db.bind_param(prep_stmt, 2, saving["savingsname"])
+            ibm_db.bind_param(prep_stmt, 3, saving["savingstype"])
+            ibm_db.bind_param(prep_stmt, 4, saving["savingsdescription"])
+            ibm_db.bind_param(prep_stmt, 5, saving["amount"])
+            ibm_db.bind_param(prep_stmt, 6, email)
+            ibm_db.execute(prep_stmt)
+        except:
+            print("error")
+            return False
+        return True
+    
+    def editSavingsData(self,savingsid,saving):
+        try:
+            sql = "update savings set savingsname=?,description=?,savingstype=?,amount=? where savingsid = ?;"
+            prep_stmt = ibm_db.prepare(conn, sql)
+            ibm_db.bind_param(prep_stmt, 1, saving["savingsname"])
+            ibm_db.bind_param(prep_stmt, 2, saving["savingsdescription"])
+            ibm_db.bind_param(prep_stmt, 3, saving["savingstype"])
+            ibm_db.bind_param(prep_stmt, 4, saving["amount"])
+            ibm_db.bind_param(prep_stmt, 5, savingsid)
+            ibm_db.execute(prep_stmt)
+        except:
+            return False 
+        return True
+
+    def updateSavingsData(self,savingsid,savingsType,amount):
+        try:
+            sql1 = "SELECT amount as amount from savings where savingsid = ? "
+            stmt = ibm_db.prepare(conn, sql1)
+            ibm_db.bind_param(stmt,1,savingsid)
+            ibm_db.execute(stmt)
+            value = ibm_db.fetch_assoc(stmt)
+            savingsamount = float(value["AMOUNT"])
+        except:
+            print("No Savings")
+        if savingsType=="credit":
+            savingsamount += amount
+        else:
+            savingsamount -= amount
+        try:
+            sql = "update savings set amount=? where savingsid = ?;"
+            prep_stmt = ibm_db.prepare(conn, sql)
+            ibm_db.bind_param(prep_stmt, 1, savingsamount)
+            ibm_db.bind_param(prep_stmt, 2, savingsid)
+            ibm_db.execute(prep_stmt)
+        except:
+            return False 
+        return True
+
+    
+    
