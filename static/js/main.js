@@ -363,9 +363,21 @@ function validatePhone(){
 }
 
 function ValidateForm(){
-  if(!validateName() || !validateEmail() || !validatePass()){
-    // Disabling a button
-  submitButton.disabled = true;
+  if(!validateName() || !validateEmail() || !validatePass() || !validatePhone()){
+    return false;
   }
-  submitButton.disabled = false;
+  return true;
+}
+function ValidatePassword(){
+  if(!validatePass() || !validatePass1() || !validatePass2()){
+    return false;
+  }
+  return true;
+}
+
+function ValidateProfile(){
+  if(!validateName()|| !validatePhone()){
+    return false;
+  }
+  return true;
 }
