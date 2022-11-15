@@ -52,7 +52,8 @@
                 </div>
                 <div class="col-md-6 form_group">
                   <label for="expenseAmount" class="form-label">Amount Spent</label>
-                  <input type="text" class="form-control" id="expenseAmount" name="expenseamount" onkeyup="validateAmount()">
+                  <input type="number" class="form-control" id="expenseAmount" name="expenseamount" onkeyup="validateAmount() "
+                  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
                   <div id="amount-error"></div>
                 </div>
                 <div class="text-center">
