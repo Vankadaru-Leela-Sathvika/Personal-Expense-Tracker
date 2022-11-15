@@ -254,6 +254,7 @@ var passError=document.getElementById('pass-error');
 var passError1=document.getElementById('pass1-error');
 var passError2=document.getElementById('pass2-error');
 var phoneError=document.getElementById('phone-error');
+var expenseNameError=document.getElementById('expensename-error')
 
 function validateName(){
   var name=document.getElementById('name').value;
@@ -362,6 +363,28 @@ function validatePhone(){
   return true;
 }
 
+function validateExpName(){
+  var expenseName=document.getElementById('expensename').value;
+
+  if(expenseName.length==0){
+    expenseNameError.innerHTML='Name is required';
+    return false;
+  }
+  expenseNameError.innerHTML='<i class="fa-solid fa-circle-check"></i><span>&nbsp;&nbsp;&nbsp;</span>';
+  return true;
+}
+
+function validateSavingType(){
+  var savingtype=document.getElementById('savings').value;
+
+  if(savingtype.length==0){
+    savingtype.innerHTML='Savings Type is required';
+    return false;
+  }
+  savings.innerHTML='<i class="fa-solid fa-circle-check"></i><span>&nbsp;&nbsp;&nbsp;</span>';
+  return true;
+}
+
 function ValidateForm(){
   if(!validateName() || !validateEmail() || !validatePass() || !validatePhone()){
     return false;
@@ -384,6 +407,13 @@ function ValidateProfile(){
 
 function ValidateSignIn(){
   if( !validateEmail() || !validatePass() ){
+    return false;
+  }
+  return true;
+}
+
+function ValidateExpenseForm(){
+  if( !validateExpName() || !validateSavingType() ){
     return false;
   }
   return true;
