@@ -65,17 +65,16 @@ def presentHome():
         return redirect('/')
     email=session['email']
     user = database.fetchUser(email)
-    totalExpenses = database.getExpensesTotal(email)
-    totalSavings = database.getSavingsTotal(email)
+    totalExpenses = database.getTotalExpenseAmount(email)
+    totalSavings = database.getDebitSavingsAmount(email)
     expenseFilter = "year"
-    savingsFilter = "year"
     expenses = database.fetchExpensesPreview(email,5)
     monthExpenses=database.getExpensesThisYear(email)
     monthLabels=['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December']
     monthExpenseList = [0]*12
     for expense in monthExpenses:
         monthExpenseList[int(expense["MONTH"])-1]=expense["AMOUNT"]
-    return render_template('home.html',user = user,expenseFilter = expenseFilter,totalExpenses = totalExpenses, savingsFilter = savingsFilter, totalSavings = totalSavings, expenses = expenses, monthLabels = monthLabels, monthExpenseList = monthExpenseList)
+    return render_template('home.html',user = user,expenseFilter = expenseFilter,totalExpenses = totalExpenses, totalSavings = totalSavings, expenses = expenses, monthLabels = monthLabels, monthExpenseList = monthExpenseList)
 
 #Profile
 @app.route('/profile',methods=['GET','POST'])
@@ -124,9 +123,9 @@ def presentExpenses():
     email=session['email']
     user = database.fetchUser(email)
     expenses = database.fetchExpensesPreview(email)
-    savings = database.fetchSavings(email)
-    creditExpenses = database.getCreditExpenses(email)
-    debitExpenses = database.getDebitExpenses(email)
+    savings = database.fetchSavingsSelectionList(email)
+    creditExpenses = database.getCreditExpenseAmount(email)
+    debitExpenses = database.getDebitExpenseAmount(email)
     expenses1=database.getExpensesThisYear(email)
     monthLabels=['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December']
     monthExpenseList = [0]*12
@@ -139,8 +138,8 @@ def presentExpenses():
 def addExpense():
     email = session['email']
     date = request.form["expensedate"].split("-")
-    expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2]))+str(randint(0,10000))
-    if database.insertExpenseData(email,expenseid,date[0],date[1],date[2],request.form) and database.updateSavingsWithExpense(request.form):
+    expenseid=email+"".join(date)+str(randint(0,10000))+str(randint(0,10000))
+    if database.createExpenseData(email,expenseid,date[0],date[1],date[2],request.form) and database.updateSavingsWithExpense(request.form):
         return redirect('/expenses')
     return redirect('/expenses')
 
@@ -156,25 +155,25 @@ def presentExpenseRecords():
             else:
                 failureMessage = "Unable to delete the Expense!!"
         elif request.form['submit']=='getExpenseValues':
-            expense = database.getExpenseData(request.form['expenseid'])
+            expense = database.readExpenseData(request.form['expenseid'])
             return json.dumps(expense)
         elif request.form['submit']=='editExpense':
             date = request.form["expensedate"].split("-")
-            if database.editExpenseData(request.form,year=date[0],month=date[1],date=date[2]):
+            if database.updateExpenseData(request.form,year=date[0],month=date[1],date=date[2]):
                 successMessage="Edited Expense Successfully!!"
             else:
                 failureMessage="Failed to Edit Expense!!"
         elif request.form['submit']=='addExpense':
             email = session['email']
             date = request.form["expensedate"].split("-")
-            expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2]))+str(randint(0,10000))
-            if database.insertExpenseData(email,expenseid,date[0],date[1],date[2],request.form):
+            expenseid=email+"".join(date)+str(randint(0,10000))+str(randint(0,10000))
+            if database.createExpenseData(email,expenseid,date[0],date[1],date[2],request.form):
                 successMessage = "Added Expense Successfully"
             else:
                 failureMessage = "Could Not Add Expense!!"
     user = database.fetchUser(email)
     expenses = database.fetchExpenses(email)
-    savings = database.fetchSavings(email)   
+    savings = database.fetchSavingsSelectionList(email)   
     return render_template('expenseRecords.html',user = user, expenses = expenses,savings=savings,successMessage = successMessage, failureMessage=failureMessage)
 
 @app.route('/expenseAnalysis')
@@ -217,8 +216,8 @@ def presentSavings():
 def addSavings():
     email = session['email']
     if request.method == "POST":
-        savingsid=email+str(database.getTotalSavingsCount(email)+randint(0,10000)+randint(0,10000))
-        if database.insertSavingsData(email,savingsid,request.form,):
+        savingsid=email+str(randint(0,10000))+str(randint(0,10000))
+        if database.createSavingsData(email,savingsid,request.form,):
             return redirect('/Savings')
     return redirect('/Savings')
 
@@ -229,21 +228,21 @@ def presentSavingsRecords():
     failureMessage = None
     if request.method=='POST':
         if request.form['submit']=='deleteSaving':
-            if database.deleteSavingData(request.form['savingsid']):
+            if database.deleteSavingsData(request.form['savingsid']):
                 successMessage = "Deleted SuccessFully"
             else:
                 failureMessage = "Unable to delete the Saving!!"
         elif request.form['submit']=='getSavingsValues':
-            saving = database.getSavings(request.form['savingsid'])
+            saving = database.readSavingsData(request.form['savingsid'])
             return json.dumps(saving)
         elif request.form['submit']=='editsavings':
-            if database.editSavingsData(request.form):
+            if database.updateSavingsData(request.form):
                 successMessage="Edited Saving Successfully!!"
             else:
                 failureMessage="Failed to Saving Expense!!"
         elif request.form['submit']=='addSaving':
-            savingsid=email+str(database.getTotalSavingsCount(email))+str(randint(0,1000))+str(randint(0,10000))
-            if database.insertSavingsData(email,savingsid,request.form,):
+            savingsid=email+str(randint(0,10000))+str(randint(0,10000))
+            if database.createSavingsData(email,savingsid,request.form,):
                 successMessage = "Added Saving Successfully"
             else:
                 failureMessage = "Could Not Add Saving!!"
@@ -257,27 +256,20 @@ def presentSavingsRecords():
 def presentSavingsAnalysis():
     email=session['email']
     user=database.fetchUser(email)
-    return render_template('savingsAnalysis.html',user=user)
-
-
-# @app.route('/SavingsAnalysis')
-# def presentSavingsAnalysis():
-#     email=session['email']
-#     user=database.fetchUser(email)
-#     savings= database.getSavingsThisMonth(email)
-#     dayLabels=[str(i) for i in range(1,32)]
-#     print(dayLabels)
-#     daySavingsList=[0]*31
-#     for saving in savings:
-#         daySavingsList[int(saving["DATE"])-1]=saving["AMOUNT"]
-#     savings=database.getSavingsThisYear(email)
-#     monthLabels=['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December']
-#     monthSavingsList = [0]*12
-#     for saving in savings:
-#         monthSavingsList[int(saving["MONTH"])-1]=saving["AMOUNT"]
-    
-#     return render_template('savingsAnalysis.html',filter=filter,user=user,dayLabels=dayLabels,daySavingsList=daySavingsList,monthLabels=monthLabels,monthSavingsList=monthSavingsList)
-
+    debitList = database.fetchSavingsWithType(email,'debit')
+    creditList = database.fetchSavingsWithType(email,'credit')
+    debitSavingsList =[]
+    creditSavingsList =[]
+    debitLabels = []
+    creditLabels = []
+    for debit in debitList:
+        debitLabels.append(debit["SAVINGSNAME"])
+        debitSavingsList.append(debit["AMOUNT"])
+    for credit in creditList:
+        creditLabels.append(credit["SAVINGSNAME"])
+        creditSavingsList.append(credit["AMOUNT"])
+    print(creditList,creditLabels,creditSavingsList)
+    return render_template('savingsAnalysis.html',user=user, debitLabels = debitLabels ,debitSavingsList = debitSavingsList, creditLabels = creditLabels, creditSavingsList = creditSavingsList)
 
 
 #reminders
@@ -286,12 +278,6 @@ def presentReminders():
     email=session['email']
     user=database.fetchUser(email)
     return render_template('reminders.html',user=user)
-
-@app.route('/RecurringReminders')
-def presentRecurringReminders():
-    email=session['email']
-    user=database.fetchUser(email)
-    return render_template('recurringReminders.html',user=user)
 
 @app.route('/LoanTracker')
 def presentLoanTracker():
@@ -305,7 +291,7 @@ def addLoan():
     if request.method == "POST":
         date = request.form["expensedate"].split("-")
         expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2])+1)
-        if database.insertExpenseData(email,expenseid,date[0],date[1],date[2],request.form) and database.updateSavingsWithExpense(request.form):
+        if database.createExpenseData(email,expenseid,date[0],date[1],date[2],request.form) and database.updateSavingsWithExpense(request.form):
             return redirect('/expenses')
         return redirect('/expenses')
 
