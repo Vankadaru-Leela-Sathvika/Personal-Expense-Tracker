@@ -202,7 +202,6 @@ class Database:
     def getExpensesThisMonth(self,email):
         year = date.today().year
         month = date.today().month
-        print(month)
         sql ="SELECT date,SUM(amount) as amount from expenses where email=? and year=? and month=? group by date;"
         stmt = ibm_db.prepare(conn, sql)
         ibm_db.bind_param(stmt,1,email)
@@ -390,7 +389,6 @@ class Database:
         return savingsList
         
     def insertSavingsData(self,email,savingsid,saving):
-        print(saving)
         try:
             insert_sql = "INSERT INTO SAVINGS VALUES(?,?,?,?,?,?);"
             prep_stmt = ibm_db.prepare(conn, insert_sql)
@@ -406,6 +404,16 @@ class Database:
             return False
         return True
     
+    def deleteSavingData(self,savingsid):
+        try:
+            sql = "delete from expenses where savingsid = ?;"
+            stmt = ibm_db.prepare(conn, sql)
+            ibm_db.bind_param(stmt,1,savingsid)
+            ibm_db.execute(stmt)
+        except:
+            return False 
+        return True
+    
     def editSavingsData(self,saving):
         try:
             sql = "update savings set savingsname=?,description=?,savingstype=?,amount=? where savingsid = ?;"
@@ -413,7 +421,7 @@ class Database:
             ibm_db.bind_param(prep_stmt, 1, saving["savingsname"])
             ibm_db.bind_param(prep_stmt, 2, saving["savingsdescription"])
             ibm_db.bind_param(prep_stmt, 3, saving["savingstype"])
-            ibm_db.bind_param(prep_stmt, 4, saving["savingsamount"])
+            ibm_db.bind_param(prep_stmt, 4, float(saving["savingsamount"]))
             ibm_db.bind_param(prep_stmt, 5, saving["savingsid"])
             ibm_db.execute(prep_stmt)
         except:

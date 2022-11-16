@@ -53,6 +53,7 @@
                 <div class="col-md-6">
                   <label for="savings" class="form-label">Savings Type</label>
                     <select id="savings" class="form-select" name="savingstype" onkeyup="validateSavingType()">
+                      <option>Select Value</option>
                       <option value='credit'>Credit</option>
                       <option value='debit'>Debit</option>
                   </select>
@@ -99,13 +100,13 @@
                 <td>{{ row["DESCRIPTION"] }}</td>
                 <td>{{ row["AMOUNT"] }}</td>
                 <td>
-                  <button type="button" class="btn btn-warning" id="edit-savings-form" data-bs-toggle="modal" data-bs-target="#editSavingsModal" value='{{ row["savingsID"] }}'>
+                  <button type="button" class="btn btn-warning" id="edit-savings-form" data-bs-toggle="modal" data-bs-target="#editSavingsModal" value='{{ row["SAVINGSID"] }}'>
                   <i class="fa fa-pen-to-square"></i>
                   </button>
 
                   <form action="savingsRecords" method="post">
                     <input type="text" name="savingsid" value='{{ row["SAVINGSID"] }}' hidden/>
-                    <button class="btn btn-danger" type="submit" name="submit" value='deletesaving'><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-danger" type="submit" name="submit" value='deleteSaving'><i class="fa fa-trash"></i></button>
                   </form>
                 </td>
               </tr>
@@ -138,16 +139,16 @@
                <tr>
                  <th scope="row">{{ loop.index }}</th>
                  <td>{{ row["SAVINGSNAME"] }}</td>
-                 <td>{{ row["DESCRIPTION"] }}</td>
+                 <td>{{ row["DESCRIPTION"] }} </td>
                  <td>{{ row["AMOUNT"] }}</td>
                  <td>
-                   <button type="button" class="btn btn-warning" id="edit-savings-form" data-bs-toggle="modal" data-bs-target="#editSavingsModal" value='{{ row["savingsID"] }}'>
+                   <button type="button" class="btn btn-warning" id="edit-savings-form" data-bs-toggle="modal" data-bs-target="#editSavingsModal" value='{{ row["SAVINGSID"] }}'>
                    <i class="fa fa-pen-to-square"></i>
                    </button>
  
                    <form action="savingsRecords" method="post">
                      <input type="text" name="savingsid" value='{{ row["SAVINGSID"] }}' hidden/>
-                     <button class="btn btn-danger" type="submit" name="submit" value='deletesaving'><i class="fa fa-trash"></i></button>
+                     <button class="btn btn-danger" type="submit" name="submit" value='deleteSaving'><i class="fa fa-trash"></i></button>
                    </form>
                  </td>
                </tr>
@@ -178,10 +179,8 @@
              </div>
              <div class="col-md-6">
                <label for="editsavingstype" class="form-label">Savings</label>
-               <select id="editsavingstpe" class="form-select" name="savingstype" value="">
-                <option value='credit'>Credit</option>
-                <option value='debit'>Debit</option>
-               </select>
+               <input type="text" class="form-control" id="editsavingstype" name="savingstype" value="" readonly>
+            </select>
              </div>
              <div class="col-md-6">
                <label for="editsavingsamount" class="form-label">Amount</label>

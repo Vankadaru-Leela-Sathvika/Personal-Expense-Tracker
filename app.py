@@ -1,6 +1,7 @@
 from flask import *
 from database import *
 from models import *
+from random import *
 
 user = User("sample","sample","sample","sample")
 database = Database()
@@ -138,7 +139,7 @@ def presentExpenses():
 def addExpense():
     email = session['email']
     date = request.form["expensedate"].split("-")
-    expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2])+1)
+    expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2]))+str(randint(0,10000))
     if database.insertExpenseData(email,expenseid,date[0],date[1],date[2],request.form) and database.updateSavingsWithExpense(request.form):
         return redirect('/expenses')
     return redirect('/expenses')
@@ -166,7 +167,7 @@ def presentExpenseRecords():
         elif request.form['submit']=='addExpense':
             email = session['email']
             date = request.form["expensedate"].split("-")
-            expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2])+1)
+            expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2]))+str(randint(0,10000))
             if database.insertExpenseData(email,expenseid,date[0],date[1],date[2],request.form):
                 successMessage = "Added Expense Successfully"
             else:
@@ -208,17 +209,15 @@ def presentSavings():
     user=database.fetchUser(email)
     creditsavings = database.getCreditSavingsAmount(email)
     debitsavings = database.getDebitSavingsAmount(email)
-    print(creditsavings,debitsavings)
     recentsavings = database.getRecentSavings(email)
     highestsavings = database.getHighestSavings(email)
-    print(recentsavings,highestsavings)
     return render_template('savings.html',user=user,creditsavings = creditsavings, debitsavings = debitsavings, recentsavings = recentsavings, highestsavings = highestsavings)
 
 @app.route('/addSavings', methods = ['POST','GET'])
 def addSavings():
     email = session['email']
     if request.method == "POST":
-        savingsid=email+str(database.getTotalSavingsCount(email)+1)
+        savingsid=email+str(database.getTotalSavingsCount(email)+randint(0,10000)+randint(0,10000))
         if database.insertSavingsData(email,savingsid,request.form,):
             return redirect('/Savings')
     return redirect('/Savings')
@@ -235,7 +234,6 @@ def presentSavingsRecords():
             else:
                 failureMessage = "Unable to delete the Saving!!"
         elif request.form['submit']=='getSavingsValues':
-            print(request.form)
             saving = database.getSavings(request.form['savingsid'])
             return json.dumps(saving)
         elif request.form['submit']=='editsavings':
@@ -244,7 +242,7 @@ def presentSavingsRecords():
             else:
                 failureMessage="Failed to Saving Expense!!"
         elif request.form['submit']=='addSaving':
-            savingsid=email+str(database.getTotalSavingsCount(email)+1)
+            savingsid=email+str(database.getTotalSavingsCount(email))+str(randint(0,1000))+str(randint(0,10000))
             if database.insertSavingsData(email,savingsid,request.form,):
                 successMessage = "Added Saving Successfully"
             else:
