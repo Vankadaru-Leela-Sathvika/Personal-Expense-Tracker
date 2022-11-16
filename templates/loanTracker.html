@@ -28,31 +28,57 @@
               <!-- Multi Columns Form -->
               <form class="row g-3" action="/addLoan" method="post">
                 <div class="col-md-12">
-                  <label for="loanname" class="form-label">Expense Name</label>
+                  <label for="loanname" class="form-label">Loan Name</label>
                   <input type="text" class="form-control" id="loanname" name="loanname">
+                </div>
+                <div class="col-md-6">
+                  <label for="loanpayee" class="form-label">Payee</label>
+                  <input type="text" class="form-control" id="loanpayee" name="loanpayee">
                 </div>
                 <div class="col-md-6">
                   <label for="loandate" class="form-label">Date</label>
                   <input type="date" class="form-control" id="loandate" name="loandate">
                 </div>
-                <div class="col-12">
-                  <label for="loanDescription" class="form-label">Description</label>
-                  <textarea class="form-control" id="loanDescription" name="loandescription" placeholder="write loan split up...."></textarea>
-                </div>
                 <div class="col-md-6">
-                  <label for="savings" class="form-label">Savings</label>
-                  <select id="savings" class="form-select" name="savings">
-                    {% for saving in savings%}
-                      <option value='{{ saving["SAVINGSID"] }}'>{{ saving["SAVINGSNAME"] }} : {{ saving["SAVINGSTYPE"] }}</option>
-                    {% endfor %}
+                  <label for="amtborrow" class="form-label">Amount Borrowed</label>
+                  <input type="number" class="form-control" id="amtborrow" name="amtborrow">
+                </div>
+                <div class="col-md-3">
+                  <label for="duration" class="form-label">Duration</label>
+                  <input type="number" class="form-control" id="duration" name="duration">
+                </div>
+                <div class="col-md-3">
+                  <label for="duration" class="form-label" >Time</label>
+                  <select class="form-select" aria-label="Year">
+                    <option selected>Days</option>
+                    <option value="1">Weeks</option>
+                    <option value="2">Months</option>
+                    <option value="3">Years</option>
                   </select>
                 </div>
                 <div class="col-md-6">
-                  <label for="loanAmount" class="form-label">Amount Spent</label>
-                  <input type="text" class="form-control" id="loanAmount" name="loanamount">
+                  <label for="interest" class="form-label">Interest</label>
+                  <input type="number" class="form-control" id="interest" name="interest">
                 </div>
+                <div class="col-md-6">
+                  <label for="totalamt" class="form-label">Total Amount</label>
+                  <input type="number" class="form-control" id="totalamt" name="totalamt">
+                </div>
+                <div class="col-md-6">
+                  <label for="amtpaid" class="form-label">Amount Paid</label>
+                  <input type="number" class="form-control" id="amtpaid" name="amtpaid">
+                </div>
+                <div class="col-md-6">
+                  <label for="amtleft" class="form-label">Amount Left</label>
+                  <input type="number" class="form-control" id="amtleft" name="amtleft">
+                </div>
+                <div class="col-md-12">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="email" name="email">
+                </div>
+                
                 <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Add Expense</button>
+                  <button type="submit" class="btn btn-primary">Add Loan</button>
                   <button type="reset" class="btn btn-secondary">Reset</button>
                 </div>
               </form><!-- End Multi Columns Form -->
