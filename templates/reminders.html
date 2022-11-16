@@ -6,44 +6,44 @@
           <nav>
                <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="home">Home</a></li>
-                    <li class="breadcrumb-item"><a href="reminders">reminders</a></li><!--Change Here-->
+                    <li class="breadcrumb-item"><a href="Reminders">reminders</a></li><!--Change Here-->
                </ol>
           </nav>
      </div><!-- End Page Title -->
      <section class="section">
           <div class="col-md-2">
-               <!-- Add Expense Modal -->
-               <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
+               <!-- Add Reminder Modal -->
+               <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addReminderModal">
                  Add Reminders
                </button>
-               <div class="modal fade " id="addExpenseModal" tabindex="-1">
+               <div class="modal fade " id="addReminderModal" tabindex="-1">
                  <div class="modal-dialog modal-lg">
                    <div class="modal-content">
                      <div class="modal-header">
-                       <h5 class="modal-title">Add Reminders</h5>
+                       <h5 class="modal-title">Add Reminder</h5>
                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                      </div>
                      <div class="modal-body">
                        <!-- Multi Columns Form -->
-                       <form class="row g-3" action="/addExpense" method="post" onclick="return ValidateExpenseForm()">
+                       <form class="row g-3" action="/addReminder" method="post">
                          <div class="col-md-12 form_group">
-                           <label for="expensename" class="form-label">Reminder Name</label>
-                           <input type="text" class="form-control" id="expensename" name="expensename" onkeyup="validateExpName()">
-                           <div id="expensename-error"></div>
+                           <label for="Remindername" class="form-label">Reminder Name</label>
+                           <input type="text" class="form-control" id="remindername" name="remindername" >
+                           <div id="Remindername-error"></div>
                          </div>
                          <div class="col-md-6 form_group">
-                           <label for="expensedate" class="form-label">Set Date</label>
-                           <input type="date" class="form-control" id="expensedate" name="expensedate">
+                           <label for="Reminderdate" class="form-label">Set Date</label>
+                           <input type="date" class="form-control" id="reminderdate" name="reminderdate">
                     
                          </div>
                          <!-- recurr dropdown will come here  -->
                          <div class="col-12 form_group">
-                           <label for="expenseDescription" class="form-label">Description</label>
-                           <textarea class="form-control" id="expenseDescription" name="expensedescription" placeholder="write expense split up...."></textarea>
+                           <label for="ReminderDescription" class="form-label">Description</label>
+                           <textarea class="form-control" id="reminderDescription" name="reminderdescription" placeholder="write Reminder split up...."></textarea>
                          </div>
                          <div class="col-md-6 form_group">
-                           <label for="savings" class="form-label">Savings</label>
-                           <select id="savings" class="form-select" name="savings" onkeyup="validateSavingType()">
+                           <label for="frequency" class="form-label">Savings</label>
+                           <select id="frequency" class="form-select" name="frequency">
                               <option value="Only Once" label="Only Once">Only Once</option>
                               <option value="Daily" label="Daily">Daily</option>
                               <option value="Weekly" label="Weekly">Weekly</option>
@@ -52,12 +52,6 @@
                            </select>
                            <div id="saving-error"></div>
                          </div>
-                         <!-- <div class="col-md-6 form_group">
-                           <label for="expenseAmount" class="form-label">Amount Spent</label>
-                           <input type="number" class="form-control" id="expenseAmount" name="expenseamount" onkeyup="validateAmount() "
-                           oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
-                           <div id="amount-error"></div>
-                         </div> -->
                          <div class="text-center">
                            <button type="submit" class="btn btn-primary">Add Reminder</button>
                            <button type="reset" class="btn btn-secondary">Reset</button>
@@ -68,7 +62,6 @@
                      </div>
                    </div>
                  </div>
-               </div><!-- End Add Expense Modal-->
-
+               </div><!-- End Add Reminder Modal-->
      </section>
 {% endblock %} 
