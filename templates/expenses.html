@@ -26,15 +26,15 @@
             </div>
             <div class="modal-body">
               <!-- Multi Columns Form -->
-              <form class="row g-3" action="/addExpense" method="post" onclick="return ValidateExpenseForm()">
+              <form class="row g-3" action="/addExpense" method="post">
                 <div class="col-md-12 form_group">
                   <label for="expensename" class="form-label">Expense Name</label>
-                  <input type="text" class="form-control" id="expensename" name="expensename" onkeyup="validateExpName()">
+                  <input type="text" class="form-control" id="expensename" name="expensename" >
                   <div id="expensename-error"></div>
                 </div>
                 <div class="col-md-6 form_group">
                   <label for="expensedate" class="form-label">Date</label>
-                  <input type="date" class="form-control" id="expensedate" name="expensedate" onkeyup="validateDate()">
+                  <input type="date" class="form-control" id="expensedate" name="expensedate">
                   <div id="date-error"></div>
                 </div>
                 <div class="col-12 form_group">
@@ -43,7 +43,7 @@
                 </div>
                 <div class="col-md-6 form_group">
                   <label for="savings" class="form-label">Savings</label>
-                  <select id="savings" class="form-select" name="savings" onkeyup="validateSavingType()">
+                  <select id="savings" class="form-select" name="savings">
                     {% for saving in savings%}
                       <option value='{{ saving["SAVINGSID"] }}'>{{ saving["SAVINGSNAME"] }} : {{ saving["SAVINGSTYPE"] }}</option>
                     {% endfor %}
@@ -204,7 +204,7 @@
               <td>{{ row["EXPENSENAME"] }}</td>
               <td>{{ row["DATE"]+"/"+row["MONTH"]+"/"+row["YEAR"] }}</td>
               <td>{{ row["DESCRIPTION"] }}</td>
-              <td>{{ row["SAVINGSNAME"] }}</td>
+              <td>{{ row["SAVINGSNAME"] }} : {{ row["SAVINGSTYPE"] }}</td>
               <td>{{ row["AMOUNT"] }}</td>
             </tr>
           {% endfor %}

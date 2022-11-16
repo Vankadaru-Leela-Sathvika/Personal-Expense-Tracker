@@ -406,7 +406,12 @@ class Database:
     
     def deleteSavingData(self,savingsid):
         try:
-            sql = "delete from expenses where savingsid = ?;"
+            sql1 = "delete from expenses where savingsid = ?;"
+            stmt1 = ibm_db.prepare(conn, sql1)
+            ibm_db.bind_param(stmt1,1,savingsid)
+            ibm_db.execute(stmt1)
+
+            sql = "delete from savings where savingsid = ?;"
             stmt = ibm_db.prepare(conn, sql)
             ibm_db.bind_param(stmt,1,savingsid)
             ibm_db.execute(stmt)

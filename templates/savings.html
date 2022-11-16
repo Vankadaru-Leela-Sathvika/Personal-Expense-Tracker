@@ -17,7 +17,7 @@
       <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addSavingsModal">
         Add Finance
       </button>
-      <div class="modal fade " id="addSavingsModal" tabindex="-1">
+      <div class="modal fade " id="addsavingsModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
@@ -26,31 +26,29 @@
             </div>
             <div class="modal-body">
               <!-- Multi Columns Form -->
-              <form class="row g-3" action="addSavings" method="POST" onclick="return ValidatesavingsForm()">
-                <div class="col-md-12 form_group">
+              <form class="row g-3" action="addSavings" method="post">
+                <div class="col-md-12">
                   <label for="savingsname" class="form-label">Savings Name</label>
-                  <input type="text" class="form-control" id="savingsname" name="savingsname" onkeyup="validateExpName()">
-                  <div id="savingsname-error"></div>
+                  <input type="text" class="form-control" id="savingsname" name="savingsname">
                 </div>
-                <div class="col-12 form_group">
+                <div class="col-12">
                   <label for="savingsDescription" class="form-label">Description</label>
                   <textarea class="form-control" id="savingsDescription" name="savingsdescription" placeholder="write savings split up...."></textarea>
                 </div>
-                <div class="col-md-6 form_group">
+                <div class="col-md-6">
                   <label for="savings" class="form-label">Savings Type</label>
-                  <select id="savings" class="form-select" name="savingstype" onkeyup="validateSavingType()">
+                    <select id="savings" class="form-select" name="savingstype">
+                      <option>Select Value</option>
                       <option value='credit'>Credit</option>
                       <option value='debit'>Debit</option>
                   </select>
-                  <div id="saving-error"></div>
                 </div>
-                <div class="col-md-6 form_group">
+                <div class="col-md-6">
                   <label for="savingsAmount" class="form-label">Amount</label>
-                  <input type="text" class="form-control" id="savingsAmount" name="savingsamount" onkeyup="validateAmount()">
-                  <div id="amount-error"></div>
+                  <input type="text" class="form-control" id="savingsAmount" name="savingsamount">
                 </div>
                 <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Add Finance</button>
+                  <button type="submit" class="btn btn-primary" name="submit" value="addSaving">Add Finance</button>
                   <button type="reset" class="btn btn-secondary">Reset</button>
                 </div>
               </form><!-- End Multi Columns Form -->
