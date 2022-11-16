@@ -447,3 +447,107 @@ class Database:
         except:
             return False 
         return True
+
+    def createLoanData(self,email,loanid,totalamount,amountLeft,loan):
+        try:
+            insert_sql = "INSERT INTO LOANS VALUES(?,?,?,?,?,?,?,?,?,?,?);"
+            prep_stmt = ibm_db.prepare(conn, insert_sql)
+            ibm_db.bind_param(prep_stmt, 1, loanid)
+            ibm_db.bind_param(prep_stmt, 2, loan["loanname"])
+            ibm_db.bind_param(prep_stmt, 3, loan["loanpayee"])
+            ibm_db.bind_param(prep_stmt, 4, loan["loandate"])
+            ibm_db.bind_param(prep_stmt, 5, loan["amountborrowed"])
+            ibm_db.bind_param(prep_stmt, 6, loan["duration"])
+            ibm_db.bind_param(prep_stmt, 7, loan["interest"])
+            ibm_db.bind_param(prep_stmt, 8, totalamount)
+            ibm_db.bind_param(prep_stmt, 9, loan["amountpaid"])
+            ibm_db.bind_param(prep_stmt, 10, amountLeft)
+            ibm_db.bind_param(prep_stmt, 11, email)
+            ibm_db.execute(prep_stmt)
+        except:
+            print("error")
+            return False
+        return True
+
+    def readLoanData(self,email):
+        sql = "SELECT * from loans where email = ?"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.execute(stmt)
+        loan = ibm_db.fetch_both(stmt)
+        loans = []
+        while loan != False:
+            loans.append(loan)
+            loan = ibm_db.fetch_both(stmt)
+        return loans
+    
+    def getLoanData(self,loanid):
+        print(loanid)
+        sql = "SELECT * from loans where loanid = ?"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,loanid)
+        ibm_db.execute(stmt)
+        loan = ibm_db.fetch_assoc(stmt)
+        return loan
+    
+    def updateLoanData(self,totalamount,amountLeft,loan):
+        try:
+            sql = "update loans set loanname=?,payee=?,date=?,duration=?,interest=?,amountborrowed=?,totalamount=?,amountpaid=?,amountleft=? where loanid = ?;"
+            prep_stmt = ibm_db.prepare(conn, sql)
+            ibm_db.bind_param(prep_stmt, 1, loan["loanname"])
+            ibm_db.bind_param(prep_stmt, 2, loan["loanpayee"])
+            ibm_db.bind_param(prep_stmt, 3, loan["loandate"])
+            ibm_db.bind_param(prep_stmt, 4, loan["duration"])
+            ibm_db.bind_param(prep_stmt, 5, loan["interest"])
+            ibm_db.bind_param(prep_stmt, 6, loan["amountborrowed"])
+            ibm_db.bind_param(prep_stmt, 7, totalamount)
+            ibm_db.bind_param(prep_stmt, 8, loan["amountpaid"])
+            ibm_db.bind_param(prep_stmt, 9, amountLeft)
+            ibm_db.bind_param(prep_stmt, 10, loan["loanid"])
+
+            ibm_db.execute(prep_stmt)
+        except:
+            print("error")
+            return False 
+        return True
+
+    def deleteLoanData(self,loanid):
+        try:
+            sql = "delete from loans where loanid = ?;"
+            stmt = ibm_db.prepare(conn, sql)
+            ibm_db.bind_param(stmt,1,loanid)
+            ibm_db.execute(stmt)
+        except:
+            return False 
+        return True
+    
+    def getTotalLoanPaid(self,email):
+        sql = "SELECT SUM(amountpaid) as TOTAL from loans where email = ?"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.execute(stmt)
+        value = ibm_db.fetch_assoc(stmt)
+        return value["TOTAL"]
+    
+    def getTotalLoanLeft(self,email):
+        sql = "SELECT SUM(amountleft) as TOTAL from loans where email = ?"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.execute(stmt)
+        value = ibm_db.fetch_assoc(stmt)
+        return value["TOTAL"]
+    
+    def createReminder(self,reminder):
+        pass 
+
+    def readReminders(self,email):
+        sql = "SELECT * from reminders where email = ?"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.execute(stmt)
+        reminder = ibm_db.fetch_both(stmt)
+        reminders = []
+        while reminder != False:
+            reminders.append(reminder)
+            reminder = ibm_db.fetch_both(stmt)
+        return reminders

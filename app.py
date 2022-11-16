@@ -182,7 +182,6 @@ def presentExpenseAnalysis():
     user=database.fetchUser(email)
     expenses= database.getExpensesThisMonth(email)
     dayLabels=[str(i) for i in range(1,32)]
-    print(dayLabels)
     dayExpenseList=[0]*31
     for expense in expenses:
         dayExpenseList[int(expense["DATE"])-1]=expense["AMOUNT"]
@@ -268,32 +267,40 @@ def presentSavingsAnalysis():
     for credit in creditList:
         creditLabels.append(credit["SAVINGSNAME"])
         creditSavingsList.append(credit["AMOUNT"])
-    print(creditList,creditLabels,creditSavingsList)
     return render_template('savingsAnalysis.html',user=user, debitLabels = debitLabels ,debitSavingsList = debitSavingsList, creditLabels = creditLabels, creditSavingsList = creditSavingsList)
 
 
 #reminders
-@app.route('/Reminders')
+@app.route('/Reminders', methods = ['POST','GET'])
 def presentReminders():
     email=session['email']
     user=database.fetchUser(email)
-    return render_template('reminders.html',user=user)
+    reminders = database.readReminders(email)
+    return render_template('reminders.html',user=user,reminders = reminders)
 
-@app.route('/LoanTracker')
+@app.route('/LoanTracker', methods = ['GET','POST'])
 def presentLoanTracker():
     email=session['email']
+    if request.method == 'POST':
+        if request.form["submit"]=="addLoan":
+            loanid = email+"loan"+str(randint(0,10000))+str(randint(0,10000))
+            totalAmount = round(float(request.form["amountborrowed"])+((float(request.form["amountborrowed"])*float(request.form["duration"])*float(request.form["interest"]))/100.0))
+            amountLeft = totalAmount - float(request.form["amountpaid"])
+            database.createLoanData(email,loanid,totalAmount,amountLeft,request.form)
+        elif request.form["submit"]=="editLoan":
+            totalAmount = round(float(request.form["amountborrowed"])+((float(request.form["amountborrowed"])*float(request.form["duration"])*float(request.form["interest"]))/100.0))
+            amountLeft = totalAmount - float(request.form["amountpaid"])
+            database.updateLoanData(totalAmount,amountLeft,request.form)
+        elif request.form["submit"]=="deleteLoan":
+            database.deleteLoanData(request.form["loanid"])
+        elif request.form["submit"]=="getLoanValues":
+            loan = database.getLoanData(request.form['loanid'])
+            return json.dumps(loan)
     user=database.fetchUser(email)
-    return render_template('LoanTracker.html',user=user)
-
-@app.route('/addLoan')
-def addLoan():
-    email = session['email']
-    if request.method == "POST":
-        date = request.form["expensedate"].split("-")
-        expenseid=email+"".join(date)+str(database.getTotalExpenseCountToday(email,date[0],date[1],date[2])+1)
-        if database.createExpenseData(email,expenseid,date[0],date[1],date[2],request.form) and database.updateSavingsWithExpense(request.form):
-            return redirect('/expenses')
-        return redirect('/expenses')
+    loans = database.readLoanData(email)
+    totalLoanPaid = database.getTotalLoanPaid(email)
+    totalLoanLeft = database.getTotalLoanLeft(email)
+    return render_template('LoanTracker.html',user=user,loans=loans, totalLoanPaid = totalLoanPaid , totalLoanLeft = totalLoanLeft)
 
 #Sample
 @app.route('/sample')
