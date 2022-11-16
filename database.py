@@ -457,13 +457,42 @@ class Database:
             return False 
         return True
 
-    def getTotalSavingsCount(self,email): 
-        sql = "SELECT COUNT(*) as COUNT from savings where email = ?"
-        stmt = ibm_db.prepare(conn, sql)
-        ibm_db.bind_param(stmt,1,email)
-        ibm_db.execute(stmt)
-        value = ibm_db.fetch_assoc(stmt)
-        return value["COUNT"]
+    # def getTotalSavingsCount(self,email): 
+    #     sql = "SELECT COUNT(*) as COUNT from savings where email = ?"
+    #     stmt = ibm_db.prepare(conn, sql)
+    #     ibm_db.bind_param(stmt,1,email)
+    #     ibm_db.execute(stmt)
+    #     value = ibm_db.fetch_assoc(stmt)
+    #     return value["COUNT"]
 
+    # def getSavingsThisMonth(self,email):
+    #     year = date.today().year
+    #     month = date.today().month
+    #     sql ="SELECT date,SUM(amount) as amount from savings where email=? and year=? and month=? group by date;"
+    #     stmt = ibm_db.prepare(conn, sql)
+    #     ibm_db.bind_param(stmt,1,email)
+    #     ibm_db.bind_param(stmt,2,year)
+    #     ibm_db.bind_param(stmt,3,month)
+    #     ibm_db.execute(stmt)
+    #     saving = ibm_db.fetch_both(stmt)
+    #     savingList = []
+    #     while saving != False:
+    #         savingList.append(saving)
+    #         saving = ibm_db.fetch_both(stmt)
+    #     return savingList
+    
+    # def getSavingsThisYear(self,email):
+    #     year = date.today().year
+    #     sql ="SELECT month,SUM(amount) as amount from savings where email=? and year=? group by month;"
+    #     stmt = ibm_db.prepare(conn, sql)
+    #     ibm_db.bind_param(stmt,1,email)
+    #     ibm_db.bind_param(stmt,2,year)
+    #     ibm_db.execute(stmt)
+    #     saving = ibm_db.fetch_both(stmt)
+    #     savingsList = []
+    #     while savings != False:
+    #         savingsList.append(saving)
+    #         savings = ibm_db.fetch_both(stmt)
+    #     return savingsList
     
     

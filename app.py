@@ -260,6 +260,26 @@ def presentSavingsAnalysis():
     return render_template('savingsAnalysis.html',user=user)
 
 
+# @app.route('/SavingsAnalysis')
+# def presentSavingsAnalysis():
+#     email=session['email']
+#     user=database.fetchUser(email)
+#     savings= database.getSavingsThisMonth(email)
+#     dayLabels=[str(i) for i in range(1,32)]
+#     print(dayLabels)
+#     daySavingsList=[0]*31
+#     for saving in savings:
+#         daySavingsList[int(saving["DATE"])-1]=saving["AMOUNT"]
+#     savings=database.getSavingsThisYear(email)
+#     monthLabels=['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December']
+#     monthSavingsList = [0]*12
+#     for saving in savings:
+#         monthSavingsList[int(saving["MONTH"])-1]=saving["AMOUNT"]
+    
+#     return render_template('savingsAnalysis.html',filter=filter,user=user,dayLabels=dayLabels,daySavingsList=daySavingsList,monthLabels=monthLabels,monthSavingsList=monthSavingsList)
+
+
+
 #reminders
 @app.route('/Reminders')
 def presentReminders():

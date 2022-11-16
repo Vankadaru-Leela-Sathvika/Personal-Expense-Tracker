@@ -345,5 +345,18 @@
         </div>
     </div>
 </footer><!-- End Footer -->
+<script>
+    window.watsonAssistantChatOptions = {
+      integrationID: "243c7147-70c8-4110-b08c-c77b6b471b5c", // The ID of this integration.
+      region: "jp-tok", // The region your integration is hosted in.
+      serviceInstanceID: "a4cb7924-2176-4110-a4b6-4742510df6c8", // The ID of your service instance.
+      onLoad: function(instance) { instance.render(); }
+    };
+    setTimeout(function(){
+      const t=document.createElement('script');
+      t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+      document.head.appendChild(t);
+    });
+  </script>
 
 {% endblock %}
