@@ -99,7 +99,7 @@ def presentHome():
         if days<0:
             continue
         elif days == 0:
-            label = today
+            label = "today"
         name = reminder["REMINDERNAME"]
         reminderdate = reminder["DATE"]+"/"+reminder["MONTH"]
         description = reminder["DESCRIPTION"]
