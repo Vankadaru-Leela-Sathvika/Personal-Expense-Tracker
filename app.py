@@ -3,7 +3,6 @@ from database import *
 from models import *
 from random import *
 
-user = User("sample","sample","sample","sample")
 database = Database()
 
 app = Flask(__name__)

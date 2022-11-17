@@ -194,7 +194,7 @@
           var reminder = JSON.parse(data);
           $('#editreminderid').val(reminder['REMINDERID']);
           $('#editremindername').val(reminder['REMINDERNAME']);
-          $('#editreminderdate').val(reminder['YEAR']+reminder['MONTH']+reminder['DATE']);
+          $('#editreminderdate').val(reminder['DATE']+"-"+reminder['MONTH']+"-"+reminder['YEAR']);
           $('#editreminderdescription').val(reminder['DESCRIPTION']);
           $('#editfrequency').val(reminder['FREQUENCY']);
         }
