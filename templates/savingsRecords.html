@@ -100,14 +100,17 @@
                 <td>{{ row["DESCRIPTION"] }}</td>
                 <td>{{ row["AMOUNT"] }}</td>
                 <td>
-                  <button type="button" class="btn btn-warning" id="edit-savings-form" data-bs-toggle="modal" data-bs-target="#editSavingsModal" value='{{ row["SAVINGSID"] }}'>
-                  <i class="fa fa-pen-to-square"></i>
-                  </button>
-
-                  <form action="SavingsRecords" method="post">
-                    <input type="text" name="savingsid" value='{{ row["SAVINGSID"] }}' hidden/>
-                    <button class="btn btn-danger" type="submit" name="submit" value='deleteSaving'><i class="fa fa-trash"></i></button>
-                  </form>
+                  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="button" class="btn btn-warning" id="edit-savings-form" data-bs-toggle="modal" data-bs-target="#editSavingsModal" value='{{ row["SAVINGSID"] }}'>
+                      <i class="fa fa-pen-to-square"></i>
+                      </button>
+    
+                      <form action="SavingsRecords" method="post">
+                        <input type="text" name="savingsid" value='{{ row["SAVINGSID"] }}' hidden/>
+                        <button class="btn btn-danger" type="submit" name="submit" value='deleteSaving'><i class="fa fa-trash"></i></button>
+                      </form>
+                  </div>
+                  
                 </td>
               </tr>
             {% endfor %}
@@ -142,14 +145,18 @@
                  <td>{{ row["DESCRIPTION"] }} </td>
                  <td>{{ row["AMOUNT"] }}</td>
                  <td>
-                   <button type="button" class="btn btn-warning" id="edit-savings-form" data-bs-toggle="modal" data-bs-target="#editSavingsModal" value='{{ row["SAVINGSID"] }}'>
-                   <i class="fa fa-pen-to-square"></i>
-                   </button>
- 
-                   <form action="SavingsRecords" method="post">
-                     <input type="text" name="savingsid" value='{{ row["SAVINGSID"] }}' hidden/>
-                     <button class="btn btn-danger" type="submit" name="submit" value='deleteSaving'><i class="fa fa-trash"></i></button>
-                   </form>
+                  
+                  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="button" class="btn btn-warning" id="edit-savings-form" data-bs-toggle="modal" data-bs-target="#editSavingsModal" value='{{ row["SAVINGSID"] }}'>
+                      <i class="fa fa-pen-to-square"></i>
+                      </button>
+    
+                      <form action="SavingsRecords" method="post">
+                        <input type="text" name="savingsid" value='{{ row["SAVINGSID"] }}' hidden/>
+                        <button class="btn btn-danger" type="submit" name="submit" value='deleteSaving'><i class="fa fa-trash"></i></button>
+                      </form>
+                  </div>
+                   
                  </td>
                </tr>
              {% endfor %}

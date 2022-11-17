@@ -108,7 +108,8 @@
             <td>{{ row["DESCRIPTION"] }}</td>
             <td>{{ row["FREQUENCY"] }}</td>
             <td>
-              <button type="button" class="btn btn-warning" id="edit-reminder-form" data-bs-toggle="modal"
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="button" class="btn btn-warning" id="edit-reminder-form" data-bs-toggle="modal"
                 data-bs-target="#editReminderModal" value='{{ row["REMINDERID"] }}'>
                 <i class="fa fa-pen-to-square"></i>
               </button>
@@ -117,6 +118,8 @@
                 <input type="text" name="reminderid" value='{{ row["REMINDERID"] }}' hidden />
                 <button class="btn btn-danger" type="submit" name="submit" value='deleteReminder'><i
                     class="fa fa-trash"></i></button>
+              </div>
+              
               </form>
             </td>
           </tr>

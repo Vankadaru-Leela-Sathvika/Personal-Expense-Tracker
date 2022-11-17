@@ -110,14 +110,17 @@
                 <td>{{ row["SAVINGSTYPE"] }}</td>
                 <td>{{ row["AMOUNT"] }}</td>
                 <td>
-                  <button type="button" class="btn btn-warning" id="edit-expense-form" data-bs-toggle="modal" data-bs-target="#editExpenseModal" value='{{ row["EXPENSEID"] }}'>
-                  <i class="fa fa-pen-to-square"></i>
-                  </button>
-
-                  <form action="expenseRecords" method="post">
-                    <input type="text" name="expenseid" value='{{ row["EXPENSEID"] }}' hidden/>
-                    <button class="btn btn-danger" type="submit" name="submit" value='deleteExpense'><i class="fa fa-trash"></i></button>
-                  </form>
+                  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="button" class="btn btn-warning" id="edit-expense-form" data-bs-toggle="modal" data-bs-target="#editExpenseModal" value='{{ row["EXPENSEID"] }}'>
+                    <i class="fa fa-pen-to-square"></i>
+                    </button>
+  
+                    <form action="expenseRecords" method="post">
+                      <input type="text" name="expenseid" value='{{ row["EXPENSEID"] }}' hidden/>
+                      <button class="btn btn-danger" type="submit" name="submit" value='deleteExpense'><i class="fa fa-trash"></i></button>
+                    </form>
+                  </div>
+                  
                 </td>
               </tr>
             {% endfor %}

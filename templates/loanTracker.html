@@ -177,13 +177,15 @@
                <td>{{ row["AMOUNTPAID"] }}</td>
                <td>{{ row["AMOUNTLEFT"] }}</td>
                <td>
-                         <button type="button" class="btn btn-warning" id="edit-loan-form" data-bs-toggle="modal" data-bs-target="#editLoanModal" value='{{ row["LOANID"] }}'>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                  <button type="button" class="btn btn-warning" id="edit-loan-form" data-bs-toggle="modal" data-bs-target="#editLoanModal" value='{{ row["LOANID"] }}'>
                          <i class="fa fa-pen-to-square"></i>
                          </button>
                     <form action="/LoanTracker" method="post">
                          <input type="text" name="loanid" value='{{ row["LOANID"] }}' hidden/>
                          <button class="btn btn-danger" type="submit" name="submit" value='deleteLoan'><i class="fa fa-trash"></i></button>
-                    </form>
+                    </form></div>
+                        
                </td>
              </tr>
            {% endfor %}
