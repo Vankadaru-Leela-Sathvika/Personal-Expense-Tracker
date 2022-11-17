@@ -169,11 +169,11 @@
                   <div class="activity">
                   {% for reminder in reminders %}
                     <div class="activity-item d-flex">
-                      <div class="activite-label">{{ reminder[0] }} days {{ reminder[3] }}</div>
+                      <div class="activite-label">{{ reminder[0]}} days {{ reminder[3] }} {{ reminder[4] }}</div>
                       <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
                       <div class="activity-content">
                         <span  class="fw-bold text-dark">{{reminder[1]}}</span>
-                        {{reminder[2]}}...
+                        {{reminder[2][:100]}}...
                       </div>
                     </div><!-- End activity item-->
                   {% endfor %}

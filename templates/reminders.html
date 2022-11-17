@@ -204,5 +204,12 @@
       })
     });
   });
+
+  $(document).ready(function () {
+    var today = new Date().toISOString().split('T')[0];
+    $("#reminderdate").attr('min', today);
+  });
+
 </script>
+
 {% endblock %}

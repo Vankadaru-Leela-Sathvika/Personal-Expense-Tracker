@@ -99,8 +99,9 @@ def presentHome():
         if days<0:
             label = "ago"
         name = reminder["REMINDERNAME"]
+        reminderdate = reminder["DATE"]+"/"+reminder["MONTH"]
         description = reminder["DESCRIPTION"]
-        reminderList.append([days,name,description])
+        reminderList.append([days,name,description,label,reminderdate])
     return render_template('home.html',user = user,expenseFilter = expenseFilter,totalExpenses = totalExpenses, totalSavings = totalSavings, expenses = expenses, monthLabels = monthLabels, monthExpenseList = monthExpenseList, totalLoanPaid = totalLoanPaid , totalLoanLeft = totalLoanLeft,reminders = reminderList)
 
 #Profile
