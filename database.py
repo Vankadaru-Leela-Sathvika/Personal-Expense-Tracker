@@ -592,6 +592,19 @@ class Database:
             reminders.append(reminder)
             reminder = ibm_db.fetch_both(stmt)
         return reminders
+    
+    def readRemindersWithLimit(self,email,limit=10):
+        sql = "SELECT * from reminders where email = ? order by year asc, month asc, date asc limit ?"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.bind_param(stmt,2,limit)
+        ibm_db.execute(stmt)
+        reminder = ibm_db.fetch_both(stmt)
+        reminders = []
+        while reminder != False:
+            reminders.append(reminder)
+            reminder = ibm_db.fetch_both(stmt)
+        return reminders
 
     def getReminder(self,reminderid):
         sql = "SELECT * from reminders where reminderid = ?"

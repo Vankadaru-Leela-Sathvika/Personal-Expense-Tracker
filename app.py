@@ -91,13 +91,15 @@ def presentHome():
         monthExpenseList[int(expense["MONTH"])-1]=expense["AMOUNT"]
     totalLoanPaid = database.getTotalLoanPaid(email)
     totalLoanLeft = database.getTotalLoanLeft(email)
-    reminders = database.readReminders(email)
+    reminders = database.readRemindersWithLimit(email)
     reminderList = []
     for reminder in reminders:
         days = (date(int(reminder["YEAR"]),int(reminder["MONTH"]),int(reminder["DATE"])) - date.today()).days
         label = "left"
         if days<0:
-            label = "ago"
+            continue
+        elif days == 0:
+            label = today
         name = reminder["REMINDERNAME"]
         reminderdate = reminder["DATE"]+"/"+reminder["MONTH"]
         description = reminder["DESCRIPTION"]
