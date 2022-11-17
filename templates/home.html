@@ -158,19 +158,6 @@
                 <div class="col-12">
                   <div class="card">
     
-                    <div class="filter">
-                      <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                          <h6>Filter</h6>
-                        </li>
-    
-                        <li><a class="dropdown-item" href="#">Today</a></li>
-                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                      </ul>
-                    </div>
-    
                     <div class="card-body">
                       <h5 class="card-title">Expense Reports <span>|This Year</span></h5>
     
@@ -213,20 +200,7 @@
             <!-- Right side columns -->
             <div class="col-lg-4">
     
-              <!-- Recent Activity -->
               <div class="card">
-                <!-- <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-    
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div> -->
     
                 <div class="card-body">
                   <h5 class="card-title">Reminders</h5>
@@ -285,8 +259,38 @@
     
                 </div>
               </div><!-- End Recent Activity -->
-    
-            </div><!-- End Right side columns -->
+            
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Loan Reports</h5>
+                  <!-- Pie Chart -->
+                  <canvas id="pieChart" style="max-height: 400px;"></canvas>
+                  <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                      new Chart(document.querySelector('#pieChart'), {
+                        type: 'pie',
+                        data: {
+                          labels: [
+                            'Total Loan Unpaid',
+                            'Total Loan Paid'
+                          ],
+                          datasets: [{
+                            label: 'My First Dataset',
+                            data: {{ [totalLoanLeft, totalLoanPaid ] | safe }},
+                            backgroundColor: [
+                              'rgb(255, 99, 132)',
+                              'rgb(54, 162, 235)',
+                            ],
+                            hoverOffset: 4
+                          }]
+                        }
+                      });
+                    });
+                  </script>
+                  <!-- End Pie CHart -->
+                </div>
+           </div>
+            </div>
     
           </div>
      </section>

@@ -73,7 +73,9 @@ def presentHome():
     monthExpenseList = [0]*12
     for expense in monthExpenses:
         monthExpenseList[int(expense["MONTH"])-1]=expense["AMOUNT"]
-    return render_template('home.html',user = user,expenseFilter = expenseFilter,totalExpenses = totalExpenses, totalSavings = totalSavings, expenses = expenses, monthLabels = monthLabels, monthExpenseList = monthExpenseList)
+    totalLoanPaid = database.getTotalLoanPaid(email)
+    totalLoanLeft = database.getTotalLoanLeft(email)
+    return render_template('home.html',user = user,expenseFilter = expenseFilter,totalExpenses = totalExpenses, totalSavings = totalSavings, expenses = expenses, monthLabels = monthLabels, monthExpenseList = monthExpenseList, totalLoanPaid = totalLoanPaid , totalLoanLeft = totalLoanLeft)
 
 #Profile
 @app.route('/profile',methods=['GET','POST'])
