@@ -1,12 +1,20 @@
+import os
 from flask import *
 from database import *
 from models import *
 from random import *
-
+from flask_mail import Mail, Message
 database = Database()
 
 app = Flask(__name__)
 app.secret_key = "FlaskNotFoundError"
+app.config['MAIL_SERVER'] = 'smtp.sendgrid.net'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'apikey'
+app.config['MAIL_PASSWORD'] = credentials.SENDGRID_API_KEY
+app.config['MAIL_DEFAULT_SENDER'] = credentials.MAIL_DEFAULT_SENDER
+mail = Mail(app)
 
 #Index
 @app.route('/')
@@ -27,6 +35,12 @@ def signup():
             return redirect('signin')
         else:
             if database.insertSignUpUserData(email,password,name):
+                msg = Message('eXpenso Registration', recipients=[email])
+                msg.body = 'Thank you for registering with eXpenso! Happy Managing!!'
+                msg.html = """<h1>Sucessfully Registered with eXpenso</h1>
+                                <h3>Thank you for registering with eXpenso! Happy Managing!!</h3>
+                            """
+                mail.send(msg)
                 flash("Registration successfull...")
                 return redirect('signin')
             else:
@@ -42,7 +56,7 @@ def signin():
         if database.fetchUser(email):
             fetchedPassword = database.fetchPassword(email)
             if fetchedPassword==password:
-                session['email']=email 
+                session['email']=email
                 return redirect('home')
             else:
                 invalidLogin="Your Password is wrong!!"                
