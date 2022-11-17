@@ -46,7 +46,7 @@
             class="img-fluid" alt="Sample image">
     </div>
     <div class="col-md-5">
-        <form id="form" action="/signin" method="post" >
+        <form id="form" action="/signin" method="post" onclick="return ValidateForm()">
             <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
                 <p class="lead fw-normal mb-0 me-3">Sign in with</p>
                 <button type="button" class="btn btn-primary btn-floating mx-1">
@@ -93,7 +93,7 @@
             <!-- Password input -->
             <div class="form-group form_group">
                 <input placeholder="Password" class="form-control" type="password" name="password"
-                    formControlName="pass1" id="pass" >
+                    formControlName="pass1" id="pass" onkeyup="validatePass()" >
                 <!-- <div *ngIf="func.pass1.touched && func.pass1.invalid" class="alert alert-danger">
                     <div *ngIf="func.pass1.errors?.['required']">* Password is required</div>
                 </div> -->
