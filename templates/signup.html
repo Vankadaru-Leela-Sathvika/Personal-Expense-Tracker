@@ -16,7 +16,7 @@
 <div class="row d-flex justify-content-center" style="margin-top: 65px;">
     <div class="col-md-5">
         {% if msg %}
-        <div class="alert alert-primary alert-dismissible fade show" role="alert" data-mdb-delay="3000".>
+        <div class="alert alert-primary alert-dismissible fade show" role="alert" data-mdb-delay="3000">
             {{ msg }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -33,7 +33,7 @@
             <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
                 <p class="lead fw-normal mb-0 me-3">Sign Up with</p>
                 
-                <div class="g-signin2" data-onsuccess="onSignIn" style="box-shadow: 0.1s;"></div>
+                <div class="g-signin2 " data-onsuccess="onSignIn"></div>
 
 
             </div>
@@ -78,13 +78,7 @@
 
 
             <!-- Checkbox -->
-            <div class="form-check mb-0">
-                <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
-                <label class="form-check-label" for="form2Example3">
-                    I have read and agree to the terms
-                </label>
-            </div>
-
+            
             <div class="text-center text-lg-start mt-4 pt-2">
                 <button type="submit" class="btn btn-primary btn-lg"
                     style="padding-left: 2.5rem; padding-right: 2.5rem;" href="/signup" id="button" >Create Account</button>
