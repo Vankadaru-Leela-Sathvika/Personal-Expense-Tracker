@@ -149,7 +149,8 @@ def presentProfile():
                 wrongPassword = "Couldn't Change Password !!"
                 pageType="profile-change-password"
     user = database.fetchUser(email)
-    return render_template('profile.html', user = user,pageType=pageType,profileEditSuccessful = profileEditSuccessful,profileEditFailed = profileEditFailed,wrongPassword=wrongPassword,noMatch=noMatch,passwordChangeSuccessful=passwordChangeSuccessful)
+    savings = database.getDebitSavingsAmount(email)
+    return render_template('profile.html', user = user,pageType=pageType,profileEditSuccessful = profileEditSuccessful,profileEditFailed = profileEditFailed,wrongPassword=wrongPassword,noMatch=noMatch,passwordChangeSuccessful=passwordChangeSuccessful,savings = savings)
 
 #Expenses
 @app.route('/expenses')
@@ -313,8 +314,11 @@ def presentReminders():
             reminderid = email+"reminder"+str(randint(0,1000000))
             year,month,date=request.form["reminderdate"].split("-")
             database.createReminder(email,reminderid,date,month,year,request.form)
+            date_time = datetime(int(year), int(month), int(date), 6, 0, 0)
+            print("Given Date:",date_time)
+            timestamp = mktime(date_time.timetuple())
             msg = Message('eXpenso Reminder', recipients=[email])
-            msg.send_at = time.mktime(datetime.date(year,month, date).timetuple())
+            msg.send_at = timestamp
             msg.body = 'Reminder!!'
             msg.html = """<h1>%s</h1>
                             <h3>%s</h3>
