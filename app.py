@@ -162,11 +162,14 @@ def presentExpenses():
     creditExpenses = database.getCreditExpenseAmount(email)
     debitExpenses = database.getDebitExpenseAmount(email)
     expenses1=database.getExpensesThisYear(email)
+    highestExpenses = database.getHighestExpenses(email)
+    recentExpenses = database.getRecentExpenses(email)
     monthLabels=['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December']
     monthExpenseList = [0]*12
     for expense in expenses1:
         monthExpenseList[int(expense["MONTH"])-1]=expense["AMOUNT"]
-    return render_template('expenses.html',user = user, expenses = expenses, savings=savings, creditExpenses=creditExpenses, debitExpenses=debitExpenses,monthLabels=monthLabels,monthExpenseList=monthExpenseList)
+
+    return render_template('expenses.html',user = user, expenses = expenses, savings=savings, creditExpenses=creditExpenses, debitExpenses=debitExpenses,monthLabels=monthLabels,monthExpenseList=monthExpenseList,highestExpenses = highestExpenses,recentExpenses = recentExpenses)
 
 
 @app.route('/addExpense',methods = ['GET','POST'])
@@ -244,7 +247,13 @@ def presentSavings():
     debitsavings = database.getDebitSavingsAmount(email)
     recentsavings = database.getRecentSavings(email)
     highestsavings = database.getHighestSavings(email)
-    return render_template('savings.html',user=user,creditsavings = creditsavings, debitsavings = debitsavings, recentsavings = recentsavings, highestsavings = highestsavings)
+    debitSavingsList =[]
+    debitLabels = []
+    debitList = database.fetchSavingsWithType(email,'debit')
+    for debit in debitList:
+        debitLabels.append(debit["SAVINGSNAME"])
+        debitSavingsList.append(debit["AMOUNT"])
+    return render_template('savings.html',user=user,creditsavings = creditsavings, debitsavings = debitsavings, recentsavings = recentsavings, highestsavings = highestsavings, debitLabels = debitLabels ,debitSavingsList = debitSavingsList,)
 
 @app.route('/addSavings', methods = ['POST','GET'])
 def addSavings():
@@ -319,6 +328,8 @@ def presentReminders():
             timestamp = mktime(date_time.timetuple())
             msg = Message('eXpenso Reminder', recipients=[email])
             msg.send_at = timestamp
+            msg.date = timestamp
+            print(msg.send_at, msg.date)
             msg.body = 'Reminder!!'
             msg.html = """<h1>%s</h1>
                             <h3>%s</h3>

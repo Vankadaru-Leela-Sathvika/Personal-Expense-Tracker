@@ -205,6 +205,32 @@ class Database:
             expensesList.append(expense)
             expense = ibm_db.fetch_both(stmt)
         return expensesList
+    def getRecentExpenses(self, email, limit = 5):
+        sql ="SELECT expensename,date,month,year,expenses.description,expenses.amount,savingsname,savingstype from expenses join savings on expenses.savingsid=savings.savingsid where expenses.email = ? order by year desc,month desc,date desc limit ?;"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.bind_param(stmt,2,limit)
+        ibm_db.execute(stmt)
+        expense = ibm_db.fetch_both(stmt)
+        expensesList = []
+        while expense != False:
+            expensesList.append(expense)
+            expense = ibm_db.fetch_both(stmt)
+        return expensesList
+
+    def getHighestExpenses(self, email, limit = 5):
+        sql ="SELECT expensename,date,month,year,expenses.description,expenses.amount,savingsname,savingstype from expenses join savings on expenses.savingsid=savings.savingsid where expenses.email = ? order by expenses.amount desc limit ?;"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,email)
+        ibm_db.bind_param(stmt,2,limit)
+        ibm_db.execute(stmt)
+        expense = ibm_db.fetch_both(stmt)
+        expensesList = []
+        while expense != False:
+            expensesList.append(expense)
+            expense = ibm_db.fetch_both(stmt)
+        return expensesList
+    
     
     def getExpensesThisYear(self,email):
         year = date.today().year
