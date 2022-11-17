@@ -126,6 +126,12 @@ def presentProfile():
             elif database.updatePassword(session['email'],newpassword):
                 passwordChangeSuccessful = "Password Changed Successfully !!"
                 pageType="profile-change-password"
+                msg = Message('eXpenso Password Changed', recipients=[email])
+                msg.body = 'Your Password has been Changed! Happy Managing!!'
+                msg.html = """<h1>Your Password has been Changed! Happy Managing!!</h1>
+                                <h3>Reply to us if its not you!!</h3>
+                            """
+                mail.send(msg)
             else:
                 wrongPassword = "Couldn't Change Password !!"
                 pageType="profile-change-password"
