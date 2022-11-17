@@ -1,4 +1,3 @@
-import os
 from flask import *
 from database import *
 from models import *
@@ -379,3 +378,6 @@ def presentLoanTracker():
 def presentSample():
     user = database.fetchUser(session['email'])
     return render_template('sample.html',user=user)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
