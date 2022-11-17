@@ -4,6 +4,8 @@ from database import *
 from models import *
 from random import *
 from flask_mail import Mail, Message
+from datetime import *
+from time import *
 database = Database()
 
 app = Flask(__name__)
@@ -89,7 +91,17 @@ def presentHome():
         monthExpenseList[int(expense["MONTH"])-1]=expense["AMOUNT"]
     totalLoanPaid = database.getTotalLoanPaid(email)
     totalLoanLeft = database.getTotalLoanLeft(email)
-    return render_template('home.html',user = user,expenseFilter = expenseFilter,totalExpenses = totalExpenses, totalSavings = totalSavings, expenses = expenses, monthLabels = monthLabels, monthExpenseList = monthExpenseList, totalLoanPaid = totalLoanPaid , totalLoanLeft = totalLoanLeft)
+    reminders = database.readReminders(email)
+    reminderList = []
+    for reminder in reminders:
+        days = (date(int(reminder["YEAR"]),int(reminder["MONTH"]),int(reminder["DATE"])) - date.today()).days
+        label = "left"
+        if days<0:
+            label = "ago"
+        name = reminder["REMINDERNAME"]
+        description = reminder["DESCRIPTION"]
+        reminderList.append([days,name,description])
+    return render_template('home.html',user = user,expenseFilter = expenseFilter,totalExpenses = totalExpenses, totalSavings = totalSavings, expenses = expenses, monthLabels = monthLabels, monthExpenseList = monthExpenseList, totalLoanPaid = totalLoanPaid , totalLoanLeft = totalLoanLeft,reminders = reminderList)
 
 #Profile
 @app.route('/profile',methods=['GET','POST'])
@@ -295,12 +307,18 @@ def presentSavingsAnalysis():
 @app.route('/Reminders', methods = ['POST','GET'])
 def presentReminders():
     email=session['email']
-
     if request.method == "POST":
         if request.form['submit']=='addReminder':
             reminderid = email+"reminder"+str(randint(0,1000000))
             year,month,date=request.form["reminderdate"].split("-")
             database.createReminder(email,reminderid,date,month,year,request.form)
+            msg = Message('eXpenso Reminder', recipients=[email])
+            msg.send_at = time.mktime(datetime.date(year,month, date).timetuple())
+            msg.body = 'Reminder!!'
+            msg.html = """<h1>%s</h1>
+                            <h3>%s</h3>
+                        """%(request.form["remindername"],request.form["reminderdescription"])
+            mail.send(msg)
         elif request.form['submit']=='editReminder':
             year,month,date=request.form["reminderdate"].split("-")
             database.updateReminder(date,month,year,request.form)
