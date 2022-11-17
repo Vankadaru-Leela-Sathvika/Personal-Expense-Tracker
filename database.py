@@ -537,8 +537,23 @@ class Database:
         value = ibm_db.fetch_assoc(stmt)
         return value["TOTAL"]
     
-    def createReminder(self,reminder):
-        pass 
+    def createReminder(self,email,reminderid,date,month,year,reminder):
+        try:
+            insert_sql = "INSERT INTO reminders VALUES(?,?,?,?,?,?,?,?);"
+            prep_stmt = ibm_db.prepare(conn, insert_sql)
+            ibm_db.bind_param(prep_stmt, 1, reminderid)
+            ibm_db.bind_param(prep_stmt, 2, date)
+            ibm_db.bind_param(prep_stmt, 3, month)
+            ibm_db.bind_param(prep_stmt, 4, year)
+            ibm_db.bind_param(prep_stmt, 5, reminder["remindername"])
+            ibm_db.bind_param(prep_stmt, 6, reminder["reminderdescription"])
+            ibm_db.bind_param(prep_stmt, 7, email)
+            ibm_db.bind_param(prep_stmt, 8, reminder["frequency"])
+            ibm_db.execute(prep_stmt)
+        except:
+            print("error")
+            return False
+        return True
 
     def readReminders(self,email):
         sql = "SELECT * from reminders where email = ?"
@@ -551,3 +566,38 @@ class Database:
             reminders.append(reminder)
             reminder = ibm_db.fetch_both(stmt)
         return reminders
+
+    def getReminder(self,reminderid):
+        sql = "SELECT * from reminders where reminderid = ?"
+        stmt = ibm_db.prepare(conn, sql)
+        ibm_db.bind_param(stmt,1,reminderid)
+        ibm_db.execute(stmt)
+        loan = ibm_db.fetch_assoc(stmt)
+        return loan
+
+    def updateReminder(self,date,month,year,reminder):
+        try:
+            sql = "update reminders set date=?,month=?,year=?,remindername=?,description=?,frequency=? where reminderid = ?;"
+            prep_stmt = ibm_db.prepare(conn, sql)
+            ibm_db.bind_param(prep_stmt, 1, date)
+            ibm_db.bind_param(prep_stmt, 2, month)
+            ibm_db.bind_param(prep_stmt, 3, year)
+            ibm_db.bind_param(prep_stmt, 4, reminder["remindername"])
+            ibm_db.bind_param(prep_stmt, 5, reminder["reminderdescription"])
+            ibm_db.bind_param(prep_stmt, 6, reminder["frequency"])
+            ibm_db.bind_param(prep_stmt, 10, reminder["reminderid"])
+            ibm_db.execute(prep_stmt)
+        except:
+            print("error")
+            return False 
+        return True
+
+    def deleteReminder(self, reminderid):
+        try:
+            sql = "delete from reminders where reminderid = ?;"
+            stmt = ibm_db.prepare(conn, sql)
+            ibm_db.bind_param(stmt,1,reminderid)
+            ibm_db.execute(stmt)
+        except:
+            return False 
+        return True

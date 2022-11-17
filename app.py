@@ -274,6 +274,21 @@ def presentSavingsAnalysis():
 @app.route('/Reminders', methods = ['POST','GET'])
 def presentReminders():
     email=session['email']
+
+    if request.method == "POST":
+        if request.form['submit']=='addReminder':
+            reminderid = email+"reminder"+str(randint(0,1000000))
+            year,month,date=request.form["reminderdate"].split("-")
+            database.createReminder(email,reminderid,date,month,year,request.form)
+        elif request.form['submit']=='editReminder':
+            year,month,date=request.form["reminderdate"].split("-")
+            database.updateReminder(date,month,year,request.form)
+        elif request.form['submit']=='getReminderValues':
+            reminder = database.getReminder(request.form['reminderid'])
+            return json.dumps(reminder)
+        elif request.form['submit']=='deleteReminder':
+            database.deleteReminder(request.form["reminderid"])
+
     user=database.fetchUser(email)
     reminders = database.readReminders(email)
     return render_template('reminders.html',user=user,reminders = reminders)
