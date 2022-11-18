@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: personal-expense-tracker-service
+  name: personal-expense-tracker-app-service
 spec:
   type: ClusterIP
   ports:
     - port: 5000
   selector:
-    app: personal-expense-tracker
+    app: personal-expense-tracker-app

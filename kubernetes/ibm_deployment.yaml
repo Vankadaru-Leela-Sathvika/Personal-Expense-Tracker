@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: personal-expense-tracker
+  name: personal-expense-tracker-app
 
 spec:
   replicas: 5
   selector:
     matchLabels:
-      app: personal-expense-tracker
+      app: personal-expense-tracker-app
   template:
     metadata:
       labels:
-        app: personal-expense-tracker
+        app: personal-expense-tracker-app
 
     spec:
       containers:
-        - name: personal-expense-tracker
-          image: jp.icr.io/petnamespace/personal-expense-tracker
+        - name: personal-expense-tracker-app
+          image: jp.icr.io/petnamespace/personal-expense-tracker-app
           imagePullPolicy: Always
           ports:
             - containerPort: 5000

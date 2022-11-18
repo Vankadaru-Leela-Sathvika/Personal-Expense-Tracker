@@ -12,7 +12,7 @@ spec:
         paths:
           - backend:
               service:
-                name: personal-expense-tracker-service
+                name: personal-expense-tracker-app-service
                 port:
                   number: 5000
             path: /
