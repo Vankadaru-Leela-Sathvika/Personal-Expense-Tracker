@@ -371,7 +371,7 @@ def presentLoanTracker():
     loans = database.readLoanData(email)
     totalLoanPaid = database.getTotalLoanPaid(email)
     totalLoanLeft = database.getTotalLoanLeft(email)
-    return render_template('LoanTracker.html',user=user,loans=loans, totalLoanPaid = totalLoanPaid , totalLoanLeft = totalLoanLeft)
+    return render_template('loanTracker.html',user=user,loans=loans, totalLoanPaid = totalLoanPaid , totalLoanLeft = totalLoanLeft)
 
 #Sample
 @app.route('/sample')
